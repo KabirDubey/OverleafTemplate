@@ -1,0 +1,118 @@
+%Usage guide: https://docs.google.com/document/d/1oDJKcFVK_yXD3Do6vfyTFKJuDwdwN4g6XFTM5QASadA/edit?usp=sharing
+
+\documentclass[12pt]{article} % If you want 12 pt font instead of the standard 10 pt
+%\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stackengine}
+
+
+
+
+
+\usepackage[shortlabels]{enumitem}
+\usepackage[margin=1 in]{geometry}
+
+\newcommand{\LRT}[2]{%
+  \mathrel{\mathop\gtrless\limits^{#1}_{#2}}%
+}
+
+
+\pagenumbering{arabic}
+
+\usepackage{mathhw}
+
+\begin{document}
+
+\setlength{\abovedisplayskip}{7pt}
+% \setlength{\belowdisplayskip}{10pt}
+
+\begin{center}
+    \textbf{6.437 Notes}\\
+    Anugrah Chemparathy
+\end{center}
+\note{L9 - Exponential Families}
+
+\begin{align*}
+    \dot{\alpha}(x) 
+    &= \dot{\lambda}(x) E[t(y)] \\
+    \Ddot{\alpha}(x)
+    &= \Ddot{\lambda}(x) E[t(y)] + \dot{\lambda}(x)^2\ \Var[t(y)]
+\end{align*}
+
+\begin{equation*}
+    J_y(x) =
+    E\left[\left(\frac{\partial}{\partial x} \ln p_y(y;x) \right) ^2 \right]
+    =- E\left[\frac{\partial^2}{\partial x^2} \ln p_y(y;x) \right]
+\end{equation*}
+
+\note{L18 - Conjugate Priors}
+\begin{equation*}
+    p_{x|y_N,\cdots,y_1} = 
+    \frac{
+    p_{y_N|x}p_{x|y_{N-1}, \cdots, y_1}
+    }{
+    \int p_{y_N|x} p_{x|y_{N-1}, \cdots, y_1} \ dx
+    }
+\end{equation*}
+
+In one of the optional sections, it is shown that conjugate priors only exist for $p_{y|x}$ which are from exponential families. In the last section, they show how to construct a conjugate prior family from a given exponential family, and essentially that all exponential families have a conjugate prior family.
+
+If $p_{y|x}(y|x) = \exp{\lambda(x)^T t(y) - \alpha(x) + \beta(y)}$, then the corresponding conjugate prior family is:
+\begin{equation*}
+    Q = \{ 
+    q(\cdot; \mathbf{t},N):
+    q(x; \mathbf{t},N)
+    =
+    \exp{[t^T \lambda(x) - N\alpha(x)] - \gamma(t,N)}
+    \}
+\end{equation*}
+where $\mathbf{t}$ is an updating function of the $t(y)$ we see, starting from our prior's value of $t_0$. The corresponding prior is $p_x(x) = q(x;t_0,N_0)$.
+
+Correspondingly, $Q$ is itself a canonical exponential family with natural statistic $[\lambda(x), - \alpha(x)]$ and parameter (known as $x$ in the definition earlier in the notes) $[\mathbf{t}, N]$
+
+\begin{align*}
+    p_{y|x}(y|x) &= \exp{\lambda(x)^T t(y) - \alpha(x) + \beta(y)} \\
+    Q &= \{ 
+    q(\cdot; \mathbf{t},N):
+    q(x; \mathbf{t},N)
+    =
+    \exp{[t^T \lambda(x) - N\alpha(x)] - \gamma(t,N)}
+    \}
+\end{align*}
+
+\note{general}
+\begin{equation*}
+    P(\cup_N A_i) \leq \sum_N P(A_i)
+\end{equation*}
+
+\end{document}
+
+
+\begin{comment}
+Pink - Important ideas/defs/thsm
+Green - Corollaries/lesser thms 
+Blue - Smaller words
+Yellow - Examples
+Gray - Anything trivial
+
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+\end{itemize}
+
+
+\begin{enumerate}[label=\textbf{(\alph*)}, topsep=0pt]
+    \item Hello
+\end{enumerate}
+
+\begin{itemize}[topsep=0pt]
+    \item Hi
+\end{itemize}
+
+\begin{center}
+   \includegraphics[width=0.6\textwidth]{L15-1.png} 
+\end{center}
+\end{comment} 

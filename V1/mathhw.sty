@@ -1,0 +1,189 @@
+\ProvidesPackage{mathhw}
+
+
+\usepackage{comment}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+
+
+\usepackage[dvipsnames]{xcolor} %add xcolor with some dvipsnames for extra color options
+\usepackage{tcolorbox}
+\renewcommand\labelitemii{$\rightarrow$}
+
+\newcommand{\pfrac}[1]{\frac{\partial}{\partial #1}}
+% \colorlet{bluishgreen}{blue!30!green!70} % 30% blue, 70% green
+% \definecolor{customblue}{RGB}{47, 73, 203}
+% % \definecolor{customblue}{RGB}{22,144,225}
+
+
+% % Define the edit command
+% \newcommand{\edit}[1]{%
+%   \textcolor{customblue}{\textbf{EDIT:} #1}
+% }
+
+\newcommand{\edit}[1]{%
+  \colorbox{RoyalBlue}{\sffamily \textcolor{white}{EDIT:}} 
+  \textcolor{RoyalBlue}{#1}%
+}
+
+\newcommand{\editorcomment}[1]{%
+  \colorbox{ForestGreen}{\sffamily \textcolor{white}{Editors Comment:}} 
+  \textcolor{ForestGreen}{#1}%
+}
+
+%=====Useful Syntax==========================
+\begin{comment}
+%----------------
+\begin{enumerate}[label=\textbf{(\alph*)}, topsep=0pt]
+    \item Hello
+\end{enumerate}
+%----------------
+\includegraphics[scale=1.5]{lion-logo}
+\includegraphics[width=3cm, height=4cm]{lion-logo}
+\includegraphics[width=\textwidth]{universe}
+%----------------
+\end{comment}
+
+
+%=====New Sections mimicing \note============
+\usepackage{titlesec}
+
+\titleformat{\section}[block]          % [block] is the standard section title style
+  {\bfseries\large} % Font styling (bold + normal size)
+  {} % No subsection number label
+  {0 pt} % Spacing between label and title
+  {\centering} % before block
+  [\vspace{-0.2cm}] % after block
+
+\titleformat{\subsection}[block]          % [block] is the standard section title style
+  {\bfseries\normalsize}                 % Font styling (bold + normal size)
+  {}                                     % No subsection number
+  {0pt}                                  % Spacing between label and title
+  {%
+    \vspace{-0.1cm}%                     % Add spacing before rule
+    \hrule%                              % Horizontal rule
+    \vspace{0.1cm}%                    % Adjust vertical spacing
+    \centering%                          % Center the subsection title
+  }%
+  [\vspace{-0.4cm}]                      % Negative spacing after the title block
+
+\titleformat{\subsubsection}[block]          % [block] is the standard section title style
+  {\bfseries\normalsize} % Font styling (bold + normal size)
+  {\thesubsubsection} % No subsection number label
+  {1em} % Spacing between label and title
+  {} % before block
+  [\vspace{-0.2cm}] % after block
+
+
+
+%=====Question "environment"=================
+\newcommand{\note}[1]{
+\vspace{0.4 cm}
+\hrule
+\vspace{-0.2 cm}
+\noindent
+\begin{center}
+    \textbf{#1}
+\end{center}
+\vspace{-0.4 cm}
+}
+
+%https://tex.stackexchange.com/questions/215555/how-can-i-remove-vertical-spacing-around-a-centered-element
+\newcommand{\separate}{
+\vspace{-0.6em}
+{\centering
+\line(1,0){200}\\
+\par}
+}
+
+\newcommand{\headrule}{
+    \vspace{-0.1 cm}
+    \hrule
+    \vspace{0.2 cm}
+}
+
+
+%====== Other Added Stuff====================
+
+%Changing the font
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{sansmath} % Enables turning on sans-serif math mode, and using other environments
+% \sansmath % Enable sans-serif math for rest of document
+
+%adding in color options
+\usepackage[dvipsnames]{xcolor}
+
+\newcommand{\mathhl}[1]{%highlightmath
+  \colorbox{blue!20}{$\displaystyle#1$}}
+ 
+\newcommand{\bluehl}[1]{%highlightmath
+  \colorbox{blue!20}{#1}}
+
+%invert page colors
+%\pagecolor{black}
+%\color{white}
+
+
+
+\usepackage{amsmath}
+
+%Removing indentation
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5 em}
+
+%Use enumitem!
+\usepackage{enumitem}
+
+
+\usepackage{physics}%To get nice differentiation symbols
+\usepackage{gensymb}%To get nice degree symbols
+
+%To reset align counter after each use
+\usepackage{etoolbox}
+\AtBeginEnvironment{align}{\setcounter{equation}{0}}
+
+%============================================
+
+
+
+%programming code package
+\usepackage{listings}
+\usepackage{xcolor} %a better color package
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.85,1,0.95}
+
+\lstset{
+    frame=tb, %add top and bottom dividers
+%    aboveskip=3mm, %are these necessary?
+%   belowskip=3mm,
+    backgroundcolor=\color{backcolour}, 
+    numberstyle={\footnotesize\color{gray}\ttfamily},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\ttfamily},
+    numbers=left, %To add the line numbers on the left
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=3,
+    escapechar=\%
+}

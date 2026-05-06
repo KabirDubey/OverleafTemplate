@@ -1,0 +1,241 @@
+\ProvidesPackage{mathhw}
+
+
+%  mathbb for integers
+\usepackage{bbm}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\usepackage{comment}
+
+\usepackage{graphicx}
+\graphicspath{ {./images/} }
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=cyan,
+    pdftitle={Overleaf Example},
+    pdfpagemode=FullScreen,
+    }
+
+\usepackage[dvipsnames]{xcolor} %add xcolor with some dvipsnames for extra color options
+\usepackage{tcolorbox}
+\renewcommand\labelitemii{$\rightarrow$}
+
+%=====Useful Syntax==========================
+\begin{comment}
+%----------------
+\begin{enumerate}[label=\textbf{(\alph*)}, topsep=0pt]
+    \item Hello
+\end{enumerate}
+%----------------
+\includegraphics[scale=1.5]{lion-logo}
+\includegraphics[width=3cm, height=4cm]{lion-logo}
+\includegraphics[width=\textwidth]{universe}
+%----------------
+\end{comment}
+
+
+
+
+%=====Question "environment"=================
+\newcommand{\note}[1]{
+\vspace{0.4 cm}
+\hrule
+\vspace{-0.2 cm}
+\noindent
+\begin{center}
+    \textbf{#1}
+\end{center}
+\vspace{-0.4 cm}
+}
+
+\newcommand{\bluebox}[1]{
+    \begin{tcolorbox}[width=\textwidth,colback={ProcessBlue!10}, parbox=false]    
+        #1
+    \end{tcolorbox}
+}
+\newcommand{\greenbox}[1]{
+    \begin{tcolorbox}[width=\textwidth,colback={LimeGreen!10}, parbox=false]    
+        #1
+    \end{tcolorbox}
+}
+\newcommand{\yellowbox}[1]{
+    \begin{tcolorbox}[width=\textwidth,colback={Goldenrod!15}, parbox=false]    
+        #1
+    \end{tcolorbox}
+}
+\newcommand{\pinkbox}[1]{
+    \begin{tcolorbox}[width=\textwidth,colback={CarnationPink!15}, parbox=false]    
+        #1
+    \end{tcolorbox}
+}
+\newcommand{\graybox}[1]{
+    \begin{tcolorbox}[width=\textwidth,colback={Gray!15}, parbox=false]    
+        #1
+    \end{tcolorbox}
+}
+
+\newcommand{\boxspace}[1]{
+    \vspace{1em}
+}
+\newcommand{\todo}[1]{\textbf{\textcolor{red}{TODO:}} \textcolor{red}{#1}}
+
+
+%shorthand for partial derivatives
+\newcommand{\p}{
+    \partial
+}
+%shorthand for a full partial
+\newcommand{\pf}[2]{
+    \frac{\p #1}{\p #2}
+}
+
+\newcommand{\cl}[1]{
+    \text{cl}\left( #1 \right)
+}
+
+
+%ceiling function
+\newcommand{\ceil}[1]{
+    \lceil #1 \rceil
+}
+
+
+%https://tex.stackexchange.com/questions/215555/how-can-i-remove-vertical-spacing-around-a-centered-element
+\newcommand{\separate}{
+\vspace{-1em}
+{\centering
+\line(1,0){200}\\
+\par}
+}
+%====== Other Added Stuff====================
+
+%Changing the font
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{sansmath} % Enables turning on sans-serif math mode, and using other environments
+\sansmath % Enable sans-serif math for rest of document
+
+%adding in color options
+\usepackage[dvipsnames]{xcolor}
+
+%invert page colors
+%\pagecolor{black}
+%\color{white}
+
+
+
+\newcommand{\blue}[1]{
+    \textit{\textcolor{BlueViolet}{#1}}
+}
+
+
+\newcommand{\by}[2]{
+    #1 \times #2
+}
+\renewcommand\emph{\blue}
+
+\newcommand{\highlight}[1]{
+    \colorbox{Yellow}{#1}
+}
+
+\newcommand{\boxheader}[1]{
+    \begin{center}
+        \textbf{#1}
+    \end{center}
+}
+
+\usepackage{amsmath}
+
+%Removing indentation
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.5 em}
+
+%Use enumitem!
+\usepackage{enumitem}
+
+
+\usepackage{physics}%To get nice differentiation symbols
+\usepackage{gensymb}%To get nice degree symbols
+
+%To reset align counter after each use
+\usepackage{etoolbox}
+\AtBeginEnvironment{align}{\setcounter{equation}{0}}
+
+%============================================
+
+%====== Added Commands=======================
+
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\hh}{\mathcal{h}}
+\newcommand{\statP}{\mathbb{P}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\MP}{\mathcal{P}}
+\newcommand{\PR}{\mathcal{P}(\R)}
+\newcommand{\PC}{\mathcal{P}(\C)}
+\newcommand{\PoF}{\mathcal{P}(\F)}
+\newcommand{\nullset}[1]{\text{null } #1}
+\newcommand{\range}[1]{\text{range } #1}
+\newcommand{\img}[1]{\text{im } #1}
+%\newcommand{\rank}[1]{\text{rank } #1} %obsolete with physics package
+\newcommand{\vspan}[1]{\text{span } #1}
+\newcommand{\ndiv}{\hspace{-4pt}\not|\hspace{2pt}}
+\newcommand{\LV}{\mathcal{L}(V)}
+\newcommand{\TC}{T_{\C}}
+\newcommand{\VC}{V_{\C}}
+\newcommand{\LVC}{\mathcal{L}(V_{\C})}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\sign}[1]{\text{sign}(#1)}
+\renewcommand{\Tr}{\text{tr}}
+
+\newcommand{\pVar}[1]{\text{Var}\left(#1\right)}
+\newcommand{\Var}{\text{Var}}
+\newcommand{\Cov}[2]{\text{Cov}\left(#1,#2\right)}
+\newcommand{\bias}{\text{bias}}
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\1}{\mathbbm{1}}
+
+\newcommand{\myvec}[2]{
+    \begin{bmatrix}
+        #1 \\
+        #2
+    \end{bmatrix}
+}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\ip}[2]{\langle #1, #2 \rangle} %physics package uses this
+%============================================
+
+
+
+%programming code package
+\usepackage{listings}
+\usepackage{xcolor} %a better color package
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.85,1,0.95}
+
+\lstset{
+    frame=tb, %add top and bottom dividers
+%    aboveskip=3mm, %are these necessary?
+%   belowskip=3mm,
+    backgroundcolor=\color{backcolour}, 
+    numberstyle={\footnotesize\color{gray}\ttfamily},
+    keywordstyle=\color{blue},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
+    showstringspaces=false,
+    columns=flexible,
+    basicstyle={\ttfamily},
+    numbers=left, %To add the line numbers on the left
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=3,
+    escapechar=\%
+}

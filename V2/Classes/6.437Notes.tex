@@ -1,0 +1,1872 @@
+%Usage guide: https://docs.google.com/document/d/1oDJKcFVK_yXD3Do6vfyTFKJuDwdwN4g6XFTM5QASadA/edit?usp=sharing
+
+\documentclass[12pt]{article} % If you want 12 pt font instead of the standard 10 pt
+%\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stackengine}
+
+
+
+
+
+\usepackage[shortlabels]{enumitem}
+\usepackage[margin=1 in]{geometry}
+
+\newcommand{\LRT}[2]{%
+  \mathrel{\mathop\gtrless\limits^{#1}_{#2}}%
+}
+
+
+\pagenumbering{arabic}
+
+\usepackage{mathhw}
+
+\begin{document}
+
+\setlength{\abovedisplayskip}{7pt}
+% \setlength{\belowdisplayskip}{10pt}
+
+\begin{center}
+    \textbf{6.437 Notes}\\
+    Anugrah Chemparathy
+\end{center}
+\note{L2 - Bayesian Hypothesis Testing}
+
+Suppose we are trying to decide which hypothesis from a set $\mathcal{H} = \{H_0,\cdots,H_m\}$ was responsible for some empirical observations $y$.
+
+\separate
+
+Suppose you have some a prioiri probability of each hypothesis class being responsible, and can write the conditional probability of observing the empirical data for each $H$:
+\begin{equation*}
+    p_H(H_m) \qquad \qquad p_{y|H} (\cdot, H_m)
+\end{equation*}
+
+Using Bayes' rule we can rewrite the a posteriori probabilities of each hypothesis as:
+\begin{equation*}
+    p_{H|y} (H_m|y) = \frac{p(y|H) p(H)}{p(y)} = \frac{p(y|H) p(H)}{\sum_{H_i} p(y|H_i) p(H_i)}
+\end{equation*}
+
+\separate
+
+Now we consider the simpler binary hypothesis testing problem. We will construct a decision rule in the form of a likelihood ratio which we can show has the lowest expected cost.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Define $C(H_j,H_i) \triangleq C_{ij}$ as the cost of deciding the hypothesis is $H_i$ when it is actually $H_j$.
+    \item A \textbf{valid} set of costs has $C_{jj} < C_{ij}$ for $i \neq j$
+\end{itemize}
+
+The optimal decision rule is:
+\begin{equation*}
+    \hat{H}(\cdot) = \arg \min_{f(\cdot)} \varphi(f) 
+    \qquad
+    \text{where}
+    \
+    \varphi(f) \triangleq E[C(H,f(y)]
+\end{equation*}
+\begin{itemize}[topsep=-1pt]
+    \item The expectation is taken over both $y$ and $H$ and $f(\cdot)$ is our decision rule.
+\end{itemize}
+We call the expected cost $\varphi(f)$ the \textbf{Bayes risk}.
+
+\textbf{Theorem 2.1}: Given $P_i$, valid costs $C_{ij}$, and data $y$, the Bayesian decision rule is:
+\begin{equation*}
+    L(y) \triangleq
+    \frac{p_{y|H}(y|H_1)}{p_{y|H}(y|H_0)}
+    \LRT{\hat{H} = H_1}{\hat{H} = H_0}
+    \frac{P_0(C_{10} - C_{00})}{P_1(C_{01} - C_{11})}
+    \triangleq
+    \eta
+\end{equation*}
+It happens that $L(y)$ is a sufficient statistic. As it turns out any invertible function $g$ of $L(y)$ is also a sufficient statistic (i.e. $g(L(y)) \gtrless g(\eta)$ is an equally good decision rule).
+
+
+\textbf{Corollary 2.1} (Minimum Probability of Error): Using the 1-0 error loss function $C_{01}=C_{10} = 1$
+\begin{equation*}
+    \varphi(\hat{H}) = P(\hat{H}(y) = H_0, H = H_1) + P(\hat{H}(y) = H_1, H = H_0)
+\end{equation*}
+has the decision rule $\hat{H}(y) = \arg \max_{H} p_{H|y}(H|y)$ and (corollary 2.2) when both hypotheses are equally likely is equivalent to $\hat{H}(y) = \arg \max_{H} p_{y|H}(y|H)$
+
+\newpage
+
+\note{L3 - NonBayesian Hypothesis Testing}
+
+For many formulations of binary hypothesis testing, the optimal deterministic decision rule turns out to be an LRT of the same form as that from L2.
+\begin{align*}
+    P_R \triangleq P_D &\triangleq P(\hat{H}(y) = H_1 | H = H_1) \qquad \textbf{Recall}
+    \\
+    P_F &\triangleq P(\hat{H}(y) = H_1 | H = H_0) \qquad \text{Size}
+\end{align*}
+Alternatively
+\begin{align*}
+    P_E^1 &\triangleq P(\hat{H}(y) = H_1 | H = H_0) \qquad \text{Type 1}
+    \\
+    P_E^2 &\triangleq P(\hat{H}(y) = H_0 | H = H_1) \qquad \text{Type 2}
+\end{align*}
+Also we define the \textbf{Precision}
+\begin{equation*}
+    P_P \triangleq P(H = H_1 | \hat{H}(y) = H_1) 
+    =
+    \frac{p_Dp_H(H_1)}{p_{\hat{H}}(\hat{H}(y) = H_1)}
+    =
+    \frac{P_D p_H(H_1)}{P_FP_H(H_0) + P_D P_H(H_1)}
+\end{equation*}
+
+\separate
+
+As we sweep the LRT threshold $\eta$, we trace out a curve of points in the $(P_f, P_D)$ plane where:
+\begin{align*}
+    P_D(\eta) &= P(L(y) \geq \eta | H = H_1) \\
+    P_F(\eta) &= P(L(y) \geq \eta | H = H_0)
+\end{align*}
+this is called the operating characteristic of the LRT (the OC-LRT).
+
+The OC-LRT (figure 3.1) has the general shape of the top left of a quarter circle - i.e. there is a tradeoff between having a large $P_D$ (you will have a high $P_F$ as well). We can actually rearrange the Bayes risk from L2 as $\varphi(f) = \alpha P_F - \beta P_D + \gamma$.
+
+\textbf{Property 3.1}: The OC-LRT is monotonically nondecreasing.
+
+\separate
+
+\textbf{Neyman-Pearson Hypothesis Testing}: maximize $P_D$ under a $P_F$ constraint.
+\begin{equation*}
+    \arg \max_{\hat{H}(\cdot)} P_D \quad \text{subject to} \quad P_F \leq \alpha
+\end{equation*}
+
+\textbf{Theorem 3.1} (Neyman Pearson lemma) We can show that one deterministic decision rule solution to the above is
+\begin{equation*}
+    \frac{p_{y|H}(y|H_1)}{p_{y|H}(y|H_0)}
+    \LRT{H_1}{H_0} \lambda
+\end{equation*}
+where $\lambda$ is chosen such that $P_F = \alpha$ exactly using Lagrange Multipliers. This needs no prior!
+
+\separate
+
+We also define \textbf{p-values} by mapping the $LRT \rightarrow [0,1]$ using an invertible $g$ (as in L2).
+
+
+\newpage
+
+\note{L4 - Performance Limits of Hypothesis Testing}
+
+The OC-LRT graph traced out by $P_D,P_F$ at varying $\eta$ is not necessarily continuous. Note that this can happen if the underlying data distribution is discrete, or even continuous but with some piecewise components.
+
+This can be suboptimal, particularly in the Neyman-Pearson approach. If there is a discontinuity along the OC-LRT curve with points corresponding to $\eta'$ and $\eta''$ on each side and $P_F(\eta') < \alpha < P_F(\eta'')$ then we will be forced to use $\eta'$ as our threshold in the deterministic approach.
+
+\begin{center}
+   \includegraphics[width=0.8\textwidth]{437.4.1.png} 
+\end{center}
+ We can use a randomized LRT decision rule to interpolate between the two points on the OC-LRT
+\begin{align*}
+    \hat{H}(y) = 
+    \begin{cases}
+    \hat{H}'_{\eta'}(y) \qquad u = \eta' \\
+    \hat{H}''_{\eta''}(y) \qquad u = \eta''
+    \end{cases}
+\end{align*}
+Simply choosing one of two standard LRT decision rules with each threshhold with a tunable Bernoulli $p$ achieves $P_D = p P_D(\eta') + (1-p) P_D(\eta'')$ and $P_F = p P_F(\eta') + (1-p) P_F(\eta'')$.
+
+Equivalently, with $u \sim B(p)$, we can write
+\begin{equation*}
+    \hat{H}(y) = 
+    \begin{cases}
+        H_0 \qquad \quad L(y) < \eta' \\
+        H_{\1(u = \eta')} \quad \eta' \leq L(y) < \eta'' \\
+        H_1 \qquad \quad  L(y) \geq \eta''
+    \end{cases}
+    \qquad
+    p_{\hat{H}|y} (H_1|y) =
+    \begin{cases}
+        0 \quad L(y) < \eta' \\
+        p \quad \eta' \leq L(y) < \eta'' \\
+        1 \quad  L(y) \geq \eta''
+    \end{cases}
+\end{equation*}
+
+\separate
+
+We treat the randomized decision rule $\hat{H}(\cdot)$ as solely a function of the detail through a ``Markov chain" formalism: $H \leftrightarrow y \leftrightarrow \hat{H}$. Ultimately we can write stuff like:
+\begin{equation*}
+    p_{\hat{H}|y,H}(\cdot| y,H) = P_{\hat{H}|y}(\cdot|y) \quad \text{and} \quad 
+    p_{H|y,\hat{H}}(\cdot| y,\hat{H}) = P_{H|y}(\cdot|y)
+\end{equation*}
+We then define the randomized decision rule \textbf{as a conditonal distribution}:
+$P_{\hat{H}|y}(H_1|y) \triangleq q(y)$
+
+\textbf{Claim 4.1} A randomized test cannot achieve a lower Bayes' risk than the optimum LRT ($\1_{L(y) \geq \eta}$) in binary Bayesian Hypothesis testing.
+\begin{align*}
+    P_F(q) &= P(\hat{H}(y) = H_1 | H = H_0) = \int q(y) P_{y|H}(y|H_0) dy = E[q(y)| H = H_0] \\
+    p_D(q) &= P(\hat{H}(y) = H_1 | H = H_1) = \int q(y) P_{y|H}(y|H_1) dy = E[q(y)| H = H_1]
+\end{align*}
+
+\textbf{Theorem 4.1} Given hypotheses $H_0,H_1$ and some $\alpha \in [0,1]$, and a Bernoulli $u \sim B(p)$ the decision rule
+\begin{equation*}
+    q(y) =
+    \begin{cases}
+        0 \quad L(y) < \eta' \\
+        p \quad \eta' \leq L(y) < \eta'' \\
+        1 \quad  L(y) \geq \eta''
+    \end{cases}
+\end{equation*}
+satisfies $P_F(q_*) = \alpha$ and $P_D(q_*) \geq P_D(q)$ for any decision rule $q$ with $P_F(q) \leq \alpha$.
+
+
+\textbf{Neyman Pearson Function}: We define $\zeta_{NP}$ as a function mapping from $P_F \rightarrow P_D$ along the Pareto optimal frontier which we define as $\mathcal{F}_{p_Y|H}$.
+\begin{itemize}[topsep=-1pt]
+    \item 
+The given proof requires the observation that the smallest $\eta_0$ with $P(L(y) > \eta_0|H = H_0) < \alpha$ implies a point mass at $L(y) = \eta_0$, and no point mass when the inequality is no longer strict (i.e. $\leq \alpha$).
+\end{itemize}
+
+
+\textbf{Property 4.1}: The Neyman-Pearson function satisfies $\zeta_{NP}(1) = 1$ i.e. $(1,1) \in \mathcal{F}_{p_y|H}$
+
+\textbf{Property 4.2}: The Neyman-Pearson function satisfies $\zeta_{NP}(P_F) = P_D \geq P_F$ .
+
+
+\textbf{Property 4.3}: The Neyman-Pearson function is concave
+
+\textbf{Property 4.4}: Let $\eta_0$ be any LRT threshold such that there is no point mass at $\eta_0$ for under either hypothesis (i.e. $P(L(y)=\eta_0|H=H_0) = P(L(y) = \eta_0|H=H_1) = 0$). 
+\begin{equation*}
+    \dot{\zeta_{NP}}(P_F(\eta_0)) = \eta_0
+\end{equation*}
+Then the slope of the Neyman-Pearson function is equal to the threshold at each point $\eta_0$.
+
+
+\textbf{4.6 Summary - Region of Possible Operating Points} \\
+If we have a decision rule corresponding to $(P_F^*,P_D^*)$, then the reversed decision rule (corresponding to reflection over $(1/2,1/2)$) would correspond to $(1-P_F^*,1-P_D^*)$.
+
+As a result, you cannot do worse than the inverse of the Pareto-optimal frontier (worst = the lower right edge of the figure below). Additionally you can create a decision rule mapping to any point in the interior by simply interpolating between two points on each side.
+
+\begin{center}
+   \includegraphics[width=0.3\textwidth]{437.4.2.png} 
+\end{center}
+
+
+\newpage
+\note{L5 - Minimax Hypothesis Testing}
+Under the minimax framework, we assume that nature will choose the most detrimental prior for whatever decision rule we choose, and we must choose our decision rule with this in mind. We allow nature to randomly choose one of $\{H_0,H_1\}$ randomly with probability $p = P(H = H_1)$, making the Bayes risk for $r$ (irrespective of if $r$ is a good decision rule):
+\begin{equation*}
+    \varphi(p,r) = (1-p) 
+    \underbrace{E[C(H,\hat{H}) | H = H_0]}_{\triangleq\varphi_0(r)}
+     + p 
+     \underbrace{E[C(H,\hat{H})| H = H_1]}_{\triangleq\varphi_1(r)}
+\end{equation*}
+The optimum randomized decision rule $\hat{H}_m$ is 
+\begin{equation*}
+    r_M(\cdot) = \arg \min_{r} \varphi_M(r) \qquad \varphi_M(r) \triangleq \max_{p \in [0,1]}  \varphi(p,r)
+\end{equation*}
+
+\separate
+
+In Bayesian hypothesis testing we used an LRT decision rule, with prior parameter $q$ and bernoulli decision parameter $\lambda$ (for use when $L(y) = \eta$ exactly). We define the \textbf{mismatch Bayes risk} as
+\begin{equation*}
+    \varphi_B(p,q,\lambda) \triangleq \varphi(p,r_B(\cdot;q,\lambda))
+\end{equation*}
+where $p$ is the true prior for $p(H)$. The \textbf{matched Bayes risk} is:
+\begin{equation*}
+    \varphi_B^*(p) \triangleq \varphi_B(p,p,\lambda)
+\end{equation*}
+
+\textbf{Claim 5.1}: We can show
+\begin{enumerate}[topsep=-1pt,itemsep=-1pt]
+    \item 
+$\varphi_B(\cdot,q,\lambda)$ is a linear function
+\begin{equation*}
+    \varphi_B(p,q,\lambda) = \varphi_B^0(q,\lambda) + p[\varphi_B^1(q,\lambda) - \varphi_B^0(q,\lambda)]
+\end{equation*}
+where $\varphi_B^i$ is the Bayes risk conditioned on $H = H_i$
+
+    \item
+$\varphi_B(p,q,\lambda)$ is lower bounded by $\varphi_B^*(p)$
+
+    \item
+$\varphi_B^*(\cdot)$ is concave and continous on $[0,1]$
+
+    \item
+$\varphi_B^*(0) = C_{00}$ and $\varphi_B^*(1) = C_{11}$
+
+\end{enumerate}
+Note that in general, $\varphi_B^*(p)$ will be differentiable at $p$ iff the optimum Bayes decision rule is ``achieved at a unique point on the efficient frontier". When two optimal decision rules on the efficient frontier corresponding to the same $p$, there is a non-differentiable point (I guess).
+
+\separate
+
+\textbf{Fact 5.1} For any real valued function $g$ we can show
+\begin{equation*}
+    \min_a \max_b \geq \max_b \min_a g(a,b)
+\end{equation*}
+\begin{itemize}[topsep=-1pt]
+    \item 
+Essentially it is optimal to choose last in such games.
+\end{itemize}
+
+\textbf{Theorem 5.1}: Given data models $P_{y|H}(\cdot|H_i)$ and valid costs, a minimax decion rule of $r_*(\cdot) \triangleq r_B(\cdot;p_*,\lambda_*)$ where $p_*$ is the minimax prior:
+\begin{equation*}
+    \min_r \max_p \varphi(p,r) = \varphi(p_*,r_*) = \varphi_B^*(p_*)
+\end{equation*}
+
+Additionally, when there exists a valid $P_F^*$ such that the line $g_M$ intersects the efficient frontier (i.e. along $\zeta(P_F)$) where we define $g_M$ as:
+\begin{equation*}
+    g_M(P_F) \triangleq 
+    \left(
+    \frac{C_{01}-C_{00}}{C_{01}-C_{11}}
+    \right) -
+    \left(
+    \frac{C_{10}-C_{00}}{C_{01}-C_{11}}
+    \right)
+    P_F
+\end{equation*}
+then it corresponds to an optimizing pair $(p_*,\lambda_*)$ of parameters for a minimax bayesian decision rule. Otherwise, we set $\lambda_*$ arbitrarily and xchoose $p_*$ according to:
+\begin{equation*}
+    p_* = 
+    \begin{cases}
+        0 \qquad \zeta_{NP}(P_F) > g_M(P_F) \quad \forall \ P_F \in [0,1] \\
+        1 \qquad \zeta_{NP}(P_F) > g_M(P_F) 
+    \end{cases}
+\end{equation*}
+\begin{itemize}[topsep=0pt]
+    \item 
+The proof of this theorem uses the observation that nature can just choose either $0,1$ for $p$ depending on which is worst for our choice of decision rule, making our Bayes risk $\max [\varphi_B^0, \varphi_B^1(q)]$. So for an optimal $p$ ends up having $\varphi_B^0 = \varphi_B^1$. The way you actually prove it is with inequalities though as there are some holes in this intuition.
+
+    \item
+Additionally for certain experiments, it is possible that the best decision rule to minimize cost would be to always guess one hypothesis (set your $q=1,0$) and let nature choose the opposite true prior ($p = 1,0$) because always getting the decision rule wrong, but having a choice of whether to pay $C_{01}$ or $C_{10}$, is optimal.
+
+\end{itemize}
+
+
+
+
+\textbf{Corollary 5.1}: If $r_B(\cdot; p_*,\lambda_*)$ is a minimax decision rule, then:
+\begin{equation*}
+    p_* \in \arg_p \max \varphi_B^*(p)
+\end{equation*}
+Additionally we define $r_B(\cdot;p_*,\lambda_*)$ as an \textbf{equalizer rule} when $\varphi_B^0(p_*,\lambda_*) = \varphi_B^1(p_*,\lambda_*)$. If there exist $p_*,\lambda_*$ belonging to an equalizer rule, then $r_B(\cdot;p_*,\lambda_*)$ is a minimax decision rule.
+
+
+\newpage
+\note{L6 - Bayesian Parameter Estimation}
+Suppose we have data $y$ generated under some parameters $x$ which we want to estimate.
+
+We define the \textbf{Bayes risk criteria}:
+\begin{equation*}
+    \hat{x} = \arg_{f(\cdot)} \min E[C(x,f(y)]
+\end{equation*}
+We can write the objective function as:
+\begin{equation*}
+    E[C(x,f(y))] = 
+    \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}
+    C(x,f(y)) p_{x,y}(x,y)\ dx \ dy =
+    \int_{-\infty}^{\infty} \left( \int_{-\infty}^{\infty}
+    C(x,f(y)) p_{x|y}(x|y)\ dx \right) p_y(y) \ dy
+\end{equation*}
+minimizing this is equivalent to minimizing the interior term for each particular $y$:
+\begin{equation*}
+    \hat{x}(y) = \arg \min \int_{-\infty}^{\infty} C(x,a) p_{x|y}p(x|y) \ dx
+\end{equation*}
+\separate
+\begin{itemize}[itemsep=-1pt]
+    \item 
+The MAE estimate (i.e. $C(a,\hat{a}) = |a - \hat{a}|$) is the median of posterior belief: $p_{x|y}(\cdot | y)$. \\ In other words the MAE estimator is the point at which the CDF equals 1/2.
+
+    \item
+The MUC loss:
+\begin{equation*}
+    C(a,\hat{a}) = 
+    \begin{cases}
+        a \quad |a-\hat{a}| > \epsilon \\
+        0 \quad \text{otherwise}
+    \end{cases}
+\end{equation*}
+is the mode of posterior belief (i.e. the MAP estimate) as $\epsilon \rightarrow 0$.
+
+    \item
+The MSE loss (Bayes Least Squares) is the mean of posterior belief: $\boxed{\hat{X}_{BLS} = E[x|y = y]}$
+\end{itemize}
+\separate
+We define the \textbf{error} of an estimator $e(x,y) = \hat{x}(y) - x$ and the \textbf{global bias} $b$ as constant vector:
+\begin{equation*}
+    b = E[e(x,y)] = 
+    \int_{-\infty}^{\infty} \int_{-\infty}^{\infty}
+    (\hat{x}(y) - x) p_{x,y}(x,y)\ dx \ dy
+\end{equation*}
+It will be useful to write $e(x,y) = b + (e(x,y) - b)$
+
+
+We can write the error correlation matrix as $E[ee^T] = \Lambda_e + bb^T$ where $\Lambda_e = E[(e-b)(e-b)^T]$
+
+\textbf{Claim 6.4}: The BLS estimate is unbiased (i.e. $b_{BLS} = 0$).
+
+\textbf{Claim 6.5} The error covariance matrix of the BLS is the expected covariance of posterior belief:
+\begin{equation*}
+    \Lambda_{e,BLS} \triangleq \Lambda_{BLS} = E[\Lambda_{x|y}(y)] = E[E[(x-E[x|y])(x-E[x|y])^T|y]]
+\end{equation*}
+
+\textbf{Theorem 6.1}: An estimator $\hat{x}(\cdot)$ is the BLS estimator iff estimation error $e$ is orthogonal to any vector-valued function $g$ of the data (i.e. $E[(\hat{x}(y) - x) g(y)^T] = 0$)
+
+\textbf{Theorem 6.2}: The error covariance $\Lambda_{e}$ of an arbitrary estimator $\hat{x}$ satisfies $\Lambda_{BLS} \preceq \Lambda_e$ with equality iff $\hat{x}(y) - E[\hat{x}(y)-x] = \hat{x}_{BLS}(y)$
+
+\textbf{Corollary 6.1}: We can write $E[\Lambda_{x|y}(y)] \preceq \Lambda_x$ with equality iff $E[x|y] = E[x]$
+
+
+
+
+
+
+\newpage
+
+
+\note{L8 - NonBayesian Parameter Estimation}
+Define an estimator $f(\cdot)$ as \textbf{valid} if $\hat{x}= f(y)$ is in estimate of $x$ based solely on $y$ (and does not depend on $x$) - i.e. $p(\hat{x}|y,x) = p(\hat{x}|y)$.
+
+Define the error and bias as:
+\begin{equation*}
+    e(y) = \hat{x}(y) - x \qquad \qquad b_{\hat{x}}(x) = E[e(y)] = E[\hat{x}(y) - x]
+\end{equation*}
+and the error covariance is $\Lambda_e = E_y[(e(y) - b_{\hat{x}}(x))(e(y) - b_{\hat{x}}(x))^T]$.
+
+
+\textbf{Definition 8.2}: An estimator $\hat{x}$ for a \textit{nonrandom} parameter $x$ is \textbf{unbiased} if $b_{\hat{x}}(x) = 0 \ \forall \ x$ 
+
+We sometimes want the MVUE (minimum variance unbiased estimator) - the \textbf{admissible} (valid and unbiased) estimator with the smallest variance: $\hat{x}_{MVUE} = \arg_x \min \lambda_{\hat{x}}(x)$.
+
+It is not guaranteed that the MVUE exists (there may be several estimators which are each minimum variance for only some values of $x$, or there may be no admissible estimators)
+
+\textbf{Theorem 8.1} \textit{(Cramer Rao Bound for scalars)}. Provided $p_y(y;x)$ satisfies the regularity condition
+\begin{equation*}
+    E\left[\frac{\partial}{\partial x}\ln p_y(y;x)\right] = 0 \qquad \forall x
+\end{equation*}
+then for any admissible $\hat{x}$ we have $\lambda_{\hat{x}}(x) \geq \frac{1}{J_y(x)}$ with
+\begin{equation*}
+    J_y(x) \triangleq E[S(y;x)^2] \qquad \qquad S(y;x) = \frac{\partial}{\partial x} \ln p_y(y;x)
+\end{equation*}
+where $J_y(x)$ is the \textbf{Fisher information} in $y$ about $x$ and $S(y;x)$ is the score function for $x$ based on $y$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item The regularity condition enforces that the orders of integration and differentiation can be exchanged: $\int \frac{\partial}{\partial x}p_y(y;x) \ dy = \frac{\partial}{\partial x} \int p_y(y;x) \ dy$
+    \item The proof bounds the correlation of $e(\hat{x},y)$ with artificial variable $f(y) = S(y;x)$ to achieve the final result, using the limit that $\rho \leq 1$.
+\end{itemize}
+
+\textbf{Corollary 8.1}: The Fisher information can be equivalently expressed as
+\begin{equation*}
+    J_y(x) = - E\left[\frac{\partial^2}{\partial x^2} \ln p_y(y;x) \right]
+\end{equation*}
+
+\textbf{Definition 8.4} An unbiased estimator is \textbf{efficient} if it satisfies the Cramer-Rao bound with equality.
+
+\textbf{Corollary 8.2} An estimator $\hat{x}$ is efficient iff it can be expressed as:
+\begin{equation*}
+    \hat{x}(y) = x + \frac{1}{J_{y}(x)} \frac{\partial}{\partial x} \ln p_y(y;x)
+\end{equation*}
+where the RHS must be independent of $x$ for the estimator to be valid.
+
+
+\textbf{Claim 8.1} When an efficient estimator $\hat{x}_{eff}$ exists, it is the MLE (i.e. $\hat{x}_{eff} = \hat{x}_{MLE}$).
+
+\newpage
+
+\textbf{Theorem 8.2} \textit{(Cramer Rao bound for vectors)}. Provided $p_y(y;x)$ satisfies the regularity condition
+\begin{equation*}
+    E \left[ \frac{\partial}{\partial x} \ln p_y(y;x) \right] = 0 \qquad \forall x
+\end{equation*}
+then the covariance matrix $\Lambda_{\hat{x}}(x)$ of any unbiased estimator satisfies:
+\begin{equation*}
+    \Lambda_{\hat{x}}(x) \geq J_y^{-1}(x)
+\end{equation*}
+in the positive semidefiniteness sense, where $J_y(x)$ is the Fisher Information matrix:
+\begin{equation*}
+    J_y(x) \triangleq E[S(y;x)^TS(y;x)] \qquad S(y;x) \triangleq \frac{\partial}{\partial x} \ln p_y(y;x)
+\end{equation*}
+\begin{itemize}[topsep=-1pt]
+    \item Additionally, we can write the Fisher matrix as the expectation of the Hessian: $$J_y(x) = - E\left[ \frac{\partial^2}{\partial x^2} \ln p_y(y;x) \right]$$
+\end{itemize}
+
+\textbf{Corollary 8.3} An unbiased efficient estimate $\hat{x}(y)$ exists iff 
+\begin{equation*}
+    \hat{x}(y) = x + J_y^{-1}(x) \left[ \frac{\partial}{\partial x} \ln p_Y(y;x) \right]
+\end{equation*}
+is a valid estimator (i.e. the RHS can be rewritten such that it does not depend on $x$, and thus is equal for any choice of $x$).
+
+
+\textbf{Corollary 8.4} If an efficient unbiased estimate exists, it is the maximum likelihood estimate.
+
+\separate
+Therew as some discussion of regularization being equivalent to priors.
+
+\textbf{Theorem 8.3} \textit{(Gauss Markov Theorem)}. Suppose data $y$ depends on parameters $x$ through the model:
+\begin{equation*}
+    y = Hx + w \qquad w \sim N(0,\Lambda_w)
+\end{equation*}
+where $\Lambda_w$ and $H$ are full rank. Then the maximum likelihood estimator is
+\begin{equation*}
+    \hat{x}_{ML}(y) = (H^T\Lambda_w^{-1}H)^{-1}H^T\Lambda_w^{-1}y
+\end{equation*}
+ is the solution to the weighted least squares formulation, and it is the MVUE.
+\begin{itemize}[topsep=-1pt]
+    \item When $\Lambda_w \propto I$ this becomes the ordinary least squares problem.
+\end{itemize}
+
+
+\newpage
+
+\note{L9 - Exponential Families}
+\textbf{Definition 9.1} A parameterized family of distributions over alphabet $\mathcal{Y}$ is a one-parameter exponential family if it can be expressed as:
+\begin{equation*}
+    p_y(y;x) = \exp\{
+    \lambda(x) t(y)  - \alpha(x) + \beta(y)
+    \} \qquad \forall \ x \in X\ y \in Y
+\end{equation*}
+Note that $\alpha(x)$ is a normalizing constant, and the PDF can be rewritten:
+\begin{equation*}
+    p_y(y;x) = \frac{1}{Z(x)}
+    \exp\{
+    \lambda(x) t(y) + \beta(y)
+    \} 
+    \qquad \quad
+    Z(x) = \int_y \exp\{
+    \lambda(x) t(y) + \beta(y)
+    \}
+\end{equation*}
+$Z(x)$ and $\alpha(x)$ are sometimes called the \textbf{partition} and \textbf{log-partition} function in statistical physics.
+
+The notation $y \sim \mathcal{E}(\mathcal{X}, \mathcal{Y}, \lambda(\cdot),t(\cdot),\beta(\cdot))$ indicates that $y$ is exponentially distributed.
+
+\textbf{Note}: adding or subtracting constants from $t(\cdot)$ and $\beta(\cdot)$ does not change the distribution - it simply allows some terms to be moved around into the normalization constant:
+\begin{equation*}
+    \ln p_y = \lambda(x)(t(y) - c_1) - \alpha(x) + (\beta(y) - c_2) = \lambda(x)t(y) - \Tilde{\alpha}(x) + \beta(y)
+\end{equation*}
+
+Additionally, if we choose $c_1 = 0$ and $c_2$ such that $q(y)\triangleq e^{\beta(y) - c_2}$ is normalized, then we can rewrite the exponential family as
+\begin{equation*}
+    p_y(y;x) \propto q(y) \exp\{\lambda(x) t(y)\}
+\end{equation*}
+Where $q$ is referred to as the \textbf{base-distribution} of the family.
+
+We can try to restrict analysis to exponential families where their support (output space) does not depend on $x$. These are called \textbf{regular}.
+
+\separate
+
+We have two properties
+\begin{equation*}
+    \frac{d}{dx} \alpha(x) = 
+    \left(
+    \frac{d}{dx}\lambda(x) 
+    \right)
+    E[t(y)]
+    \qquad
+    \frac{d^2}{dx^2} \alpha(x) = 
+    \left(
+    \frac{d^2}{dx^2}\lambda(x) 
+    \right)
+    E[t(y)]
+    +
+    \left(
+    \frac{d}{dx}\lambda(x) 
+    \right)^2
+    \Var[t(y)]
+\end{equation*}
+
+The Fisher information in $y$ about $x$ is $J_y(x) = \ddot{\lambda}(x) \frac{d}{dx}E[t(y)]$
+
+
+A \textbf{canonical} exponential family, is one with $\lambda(x) = x$.
+\begin{itemize}[topsep=0pt]
+    \item For canonical families $\dot{\alpha}(x) = E[t(y)]$ and $\ddot{\alpha}(x) = \Var[t(y)] = J_y(x)$
+\end{itemize}
+\separate
+
+Firstly, any weighted geometric mean of two probability distributions can be written as a (within the equivalence class) unique canonical exponential family (and vice-versa: $p_2(y) = c_1e^{\beta(y)}, p_1(y) = c_2 p_2(y)e^{t(y)}$):
+\begin{equation*}
+    p_y(y;x) = \frac{p_1(y)^x p_2(y)^{(1-x)}}{Z(x)} 
+    \qquad
+    \ln p_y(y;x) = x \ln \frac{p_1(y)}{p_2(y)} + \ln p_2(y) - \ln Z(x)
+\end{equation*}
+
+\textbf{Theorem 9.1}: $P$ is a one-dimensional exponential family iff for any $p_1,p_2,p_3 \in P$, there exists some $\lambda$ for which $p_3$ is a weighted geometric mean of $p_1,p_2$.
+
+There are also tilting distributions, which are scaled versions of any base distribution $q$ expressed as an canonical(?) exponential family. These weren't very interesting, so I haven't included anything.
+
+\separate 
+The ideas of exponential families generalize easily to multi-parameter families.
+\begin{equation*}
+    p_y (y;x) = \exp{\lambda(x)^T t(y) - \alpha(x) + \beta(y)}
+\end{equation*}
+And they can be conveniently constructed as such to handle finite alphabets (output space sets/range/image etc.), and under suitable conditions can ``replicate" well behaved distributions.
+
+Lastly, note that when analyzing given data, the only thing we really need to maintain for inference about the distribution are $t(y), \beta(y)$ which we can just compute, and then throw away the data. For many applications such as ML estimation we don't even need $\beta(y)$, making $t(y)$ kind of a step in the direction of \textit{sufficient statistics}, the topic of the next lecture.
+
+\newpage
+\note{L10 - Sufficient Statistics}
+A \textbf{statistic} is a deterministic function of the data $y$, i.e. $t(y)$ - this is itself a random variable due to its dependence on $y$. Many values of $y$ may map to the same value of $t$.
+
+\textbf{Def 10.1}: a statistic $t(\cdot)$ is \textbf{sufficient} wrt $p_y(\cdot;x)$ if $p_{y|t}(\cdot|\cdot;x)$ does not depend on $x \in X$: $p_{y|t}(;x_1)  = p_{y|t}(;x_2)$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Essentially the uncertainty in $y$ is not a function of $x$.
+    \item An equivalent notion of sufficiency - the likelihoods are scalings (which may depend on $y$): $p_y(y;x) \propto p_t(t(y);x)$
+\end{itemize}
+
+\textbf{Thm 10.1}: A statistic $t(\cdot)$ is sufficient with respect to a model family iff $\frac{L_y(x)}{L_t(x)} = \frac{p_y(y;x)}{p_t(t(y);x)}$ is not a function of $x$ for every $y$.
+
+\textbf{Thm 10.2} (Neyman Factorization Theorem): A statistic $t(\cdot)$ is sufficient wrt $p_y(\cdot;x)$ iff there exist functions $a,b$ such that $p_y(y;x) = a(t(y),x) b(y)$.
+
+\textbf{Def 10.2}: A sufficient statistic $s$ is \textbf{minimal} if for any other sufficient statistic $t$, there exists a function $g(\cdot)$ such that $s = g(t)$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item The minimal sufficient statistic is not unique - any 1-1 function applied will also work.
+\end{itemize}
+
+\textbf{Def 10.3}: A sufficient statistic $t$ is complete if for any function $\phi(\cdot)$ with $E[\phi(t(y))] = 0 \quad \forall x$ must satisfy $P(\phi(t(y)) = 0) = 1$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item In the notes (L10 and L9.11c!) we show that for exponential families, their natural statistic $t(y)$ is complete.
+\end{itemize}
+\textbf{Thm 10.3}: A sufficient statistic $t$ is minimal if it is complete
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Some minimal statistics may not be complete.
+\end{itemize}
+\separate
+We can also choose to model the unknown parameter in a Bayesian framework
+
+\textbf{Def 10.4}: A statistic $t(\cdot)$ is sufficient wrt $p_{x,y}$ iff $p_{y|t,x}(y|t(y),x) = p(y|t(y))$
+
+\textbf{Thm 10.4}: A statistic $t(\cdot)$ is sufficient wrt $p_{x,y}$ iff $p_{x|y}(\cdot|y) = p_{x|t}(\cdot|t(y))$
+
+\textbf{Thm 10.5}: A statistic $t = t(\cdot)$ is sufficient iff $p_{y|x}(y|x) = p_{t|x}(t(y)|x) p_{y|t}(y|t(y)) \quad \forall x,y$
+
+\separate
+
+\textbf{Def 10.5}: A variable $t$ is a statistic if it satisfies the Markov chain $x \leftrightarrow y \leftrightarrow t$
+
+Note: Hereafter we use $\propto$ defined as a multiplicative factor that may be non-constant
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Additionally, we define likelihoods as: $L_{y_1}(x) = p_y(y_1;x)$
+\end{itemize}
+
+\textbf{Thm 10.6} (partition characterization): A statistic $t$ is sufficient iff for all $y_1,y_2$ such that $t(y_1) = t(y_2)$ we have $L_{y_1}(x) \propto L_{y_2}(x)$ (i.e. there exists $g$ s.t. $L_{y_2}(x) = g(y_1, y_2) L_{y_2}(x)$)
+
+\textbf{Thm 10.7} (minimal, partition characterization): A sufficient statistic $t$ is minimal iff for all $y_1, y_2$ s.t. $L_{y_1}(x) \propto L_{y_2}(x)$ we have $t(y_1) = t(y_2)$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item I don't really understand this and should probably revisit it.
+\end{itemize}
+
+\newpage
+\note{L11 - Inequalities}
+
+A function $f$ is \textbf{convex} if $f(\alpha x + (1 - \alpha)y) \leq \alpha f(x) + (1-\alpha)f(y)$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item \textbf{strict convexity} requires the inequality to be strict
+    \item \textbf{concave} functions are the opposite (obviously)
+\end{itemize}
+
+
+\textbf{Thm} (Cauchy Schwarz): For any two lists of reals $a_i,b_i$ we have:
+\begin{equation*}
+    \left(
+    \sum_{i=1}^N a_ib_i
+    \right)^2
+    \leq
+    \left(
+    \sum_{i=1}^N a_i^2
+    \right)
+    \left(
+    \sum_{i=1}^N b_i^2
+    \right)
+\end{equation*}
+
+
+\separate
+
+\textbf{Thm 11.1} (Jensen's Inequality): If $\phi(\cdot)$ is a concave function and $v$ is a random variable defined over $V$ then
+\begin{equation*}
+    E[\phi(v)] \leq \phi(E[v])
+\end{equation*}
+If $\phi(\cdot)$ is strictly concave, then the above holds with equality iff $v$ is a deterministic constant.
+
+\separate
+
+\textbf{Thm 11.2} (Csiszar's Inequality): Given positive finite length sequences $a_i,b_i$ and a strictly convex function $f(\cdot)$ we have
+\begin{equation*}
+    \sum_{i=1}^N b_i f\left(\frac{a_i}{b_i}\right) \geq
+    \left(
+    \sum_{i=1}^N b_i
+    \right)
+    f \left(
+    \frac{\sum_{i=1}^N a_i}{\sum_{i=1}^N b_i}
+    \right)
+\end{equation*}
+with equality iff $a_i/b_i$ is a constant
+
+\textbf{Corollary 11.1} (Log-Sum Inequality) Given positive finite length sequences $a_i,b_i$:
+\begin{equation*}
+    \sum_{i=1}^N a_i \log \frac{a_i}{b_i} \geq 
+    \left(
+    \sum_{i=1}^N a_i
+    \right)
+    \log
+    \frac{
+    \sum_{i=1}^N a_i
+    }{
+    \sum_{i=1}^N b_i
+    }
+\end{equation*}
+with equality iff $a_i/b_i$ is a constant
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Simply choose $f(x) = x \log(x)$ in Czisar's inequality.
+\end{itemize}
+
+\separate
+\textbf{Thm 11.3} (Gibb's Inequality): if $v$ is a random variable distributed according to $p(\cdot)$, then for any distribution $q(\cdot)$:
+\begin{equation*}
+    E_p[\log q(v)] \leq E_p[\log p(v)]
+\end{equation*}
+with equality iff $q \cong p$.
+
+
+
+\newpage
+\note{L12 - The EM algorithm}
+
+
+
+Given data $y$ generated from $p_y(\cdot; x)$ we wish to compute the ML estimate for $\hat{x}(y) = \argmax_{a} \ell_y(a;y)$ where $\ell_y(a;y) \triangleq \log p_y(y;a)$.
+
+We also define a variable $z$ for which $y = g(z)$ for some deterministic $g$. Essentially $z$ is an arbitrary (possibly fictitious) quantity which can use for other things [what other things?]
+
+We define $\ell_z(a;z) \triangleq \log p_z(z;a)$. We can then write  the expectation of the likelihood given a choice of parameter $x$:
+\begin{align*}
+    \hat{\ell'}_z(x;y) 
+    \triangleq E_{p_{z|y}(\cdot|y;x')}[\ell_z(x;z)]
+\end{align*}
+
+Additionally, since $p_z(z;x) = p_{z,y}(z,y;x) = p_{z|y}(z|y;x) p_y(y;x)$, if we take the log and expectation (wrt $p_{z|y}(\cdot|y;x')$ parameterized by arbitrary $x'$) of each side we get:
+\begin{align*}
+    \underbrace{\log p_y(y;x)}_{\ell_Y(x;y)} 
+    &= 
+    \underbrace{E_{p_{z|y}(\cdot|y;x'))}[\log p_z(z;x)]}_{\triangleq U(x;x')}
+    \underbrace{- E_{p_{z|y}(\cdot|y;x'))}[\log p_{z|y}(z|y;x)]}_{\triangleq V(x;x')} \\
+    &= U(x;x') + V(x;x') \\
+    &\geq U(x;x') + V(x';x') \\
+    &= [U(x;x') - U(x';x')] + U(x';x') + V(x';x') \\
+    &= \underbrace{[U(x,x') - U(x',x']}_{\triangleq \Delta (x',x)} + \log p_y(y;x')
+\end{align*}
+Where in the inequality step we have used Gibbs' inequality. Essentially this means the log-likelihood will increase at every step if at every step we find a new $x$ such that $\Delta (x',x) > 0$.
+
+\separate
+
+
+We have the following iterate EM procedure for approximating ML estimates $\hat{x}(y)$:
+\begin{enumerate}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Initialize/guess a starting estimate for $\hat{x}^{(0)}$
+
+    \item
+\textbf{E-step}: Compute $U(x;\hat{x}^{(l)} = E_{p_{z|y}(\cdot|y;\hat{x}^{(l)})}[\log p_z(z;x)]$ 
+
+    \item 
+\textbf{M-step}: Solve the maximization $\hat{x}^{(l+1)} = \argmax_{x \in X} U(x;\hat{x}^{(l)})$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+We can use the stationary point equations: $\frac{\partial}{\partial x_k}U(x,x') = 0$ for each $k$.
+    
+\end{itemize}
+    \item 
+Increment $l$ and go back to step 2. Repeat until convergence
+    
+\end{enumerate}
+The notes then cover a general application of EM algorithms to an exponential family, and analysis/proof of its convergence to stationary points of $\ell_y(\cdot;y)$.
+
+
+Then there was an example of the EM algorithm used in a logistic modeling problem. It's worth reviewing to see the actual equations being used. 
+
+
+\newpage
+\note{L13 - Inference as Decision Making}
+Again, we use the observation model $p_{y|x}(\cdot | \cdot)$ with a bayesian prior $p_x(
+\cdot)$.
+
+As a new perspective on inference, consider a decision device which returns a distribution $q(
+\cdot)$ describing the relative likelihood of different $x$ based on observed $y$.
+
+We introduce a cost criterion - a function like $C(x,q) = A \sum_{a \in X} (q(a) - \mathbbm{1}_{a = x})^2 + B(x)$ or $C(x,q) = - A \log q(x) + B(x)$
+
+
+\textbf{Def 13.1} A cost function $C(\cdot,\cdot)$ is \textbf{proper} if
+\begin{equation*}
+    p_{x|y}(\cdot | y) = \argmin_q E_{p(x|y)}[C(x,q) | y = y]  \quad \forall y \in Y
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item The optimal solution to a proper cost function returns the true $p_{x|y}$
+\end{itemize}
+
+\textbf{Claim 13.1}: The log-loss cost criterion is proper
+
+\textbf{Def 13.2}: A cost function $C$ is local if there exists a function $\phi$ such that $C(x,q) = \phi(x, q(x))$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item The cost function only considers the estimated belief of $x$ and not $x \pm \epsilon$!
+\end{itemize}
+
+\textbf{Claim 13.2}: The log-loss cost criterion is local
+
+\textbf{Thm 13.1}: When the alphabet $X$ costs of at least 3 values, then the log-loss is the only smooth, local, proper cost function.
+
+\separate
+
+We proceed by studying the \textbf{minimum} expected cost of the log-loss criterion before we have any observations. Obviously, this happens when $q(\cdot) = p_x(\cdot)$. Thus we define \textbf{entropy} $H(x)$:
+\begin{equation*}
+    H(x) = - E_{p_x}[\log p_x(x)] = - \sum_a p_x(a) \log p_x(a)
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item We adopt the convention $0 \log 0 = 0$
+\end{itemize}
+
+\textbf{Claim 13.3}: For discrete rv $x \in X$ we have $0 \leq H(x) \leq \log |X|$ where the lower bound requires $x$ to be constant and the upper bound requires $x$ uniformly distributed.
+
+
+We can define 
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item \textbf{conditional entropy given $y = y$}: $H(x|y = y) \triangleq - E[\log p_{x|y}|y = y] = - \sum_a p_{x|y}(a|y) \log p(a|y)$
+    \item \textbf{conditional entropy}: $H(x|y) \triangleq E_y[H(x|y=y)] = - \sum_{a,b} p_{x,y}(a,b) \log p_{x|y}(a|b)$
+    \item We can show $0 \leq H(x | y) \leq H(x)$
+    \item \textbf{chain rule of entropy}: we can show: $H(x,y) = H(x|y) + H(y)$
+\end{itemize}
+
+The \textbf{mutual information} is the cost reduction from making an average observation:
+\begin{equation*}
+    I(x;y) \triangleq H(x) - H(x|y) = \sum_{a,b} p_{x,y}(a,b) \log \frac{p_{x,y}(a,b)}{p_x(a) p_y(b)}
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item \textbf{conditional MI}: $I(x;y|z) \triangleq H(x|z) - H(x|y,z) \geq 0$ with equality iff $x \leftrightarrow y \leftrightarrow z$
+    \item nonnegativity: $I(x;y) \geq 0$
+    \item $I(xy) = 0$ iff $x \perp y$
+    \item symmetry: $I(x;y) = I(y;x)$
+    \item chain rule: $I(x;y,z) = I(x;z) + I(x;y|z)$ where $I(x;y|z) \triangleq H(x|z) - H(x|y,z)$
+\end{itemize}
+
+
+\textbf{Thm 13.2} (Data Processing Inequality): If $x \leftrightarrow y \leftrightarrow t$ is a Markov chain (i.e. if $t$ is any statistic), then $$I(x;y) \geq I(x;t)$$ with equality iff $t$ is a sufficient statistic (i.e. $x \leftrightarrow t \leftrightarrow y$)
+
+
+\textbf{Corollary 13.1} A statistic $t$ is sufficient iff $I(x;t) = I(x;y)$
+
+\textbf{Corollary 13.2} For any deterministic $g(\cdot)$, $I(x;y) \geq I(x;g(y))$.
+
+\separate
+
+We define \textbf{KL-divergence} $D(p||q) \triangleq E_p[\log \frac{p(x)}{q(x)}]$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item By Gibbs' Inequality: $D(p||q) \geq 0$ with equality iff $p = q$
+    \item identity: $D(p || U(X)) = \log |X| - H(p)$
+    \item identity: $I(x;y) = D(p_{x,y} || p_x p_y)$ and $I(x;y|z = z) = D(P_{x,y|z}(|z) || p_{x|z}(|z) p_{y|z}(|z)$
+    \begin{itemize}[topsep=-1pt, itemsep=-1pt]
+        \item we can further write $I(x;y|z) = \sum_z p_z(z) I(x;y|z = z)$
+    \end{itemize}
+\end{itemize}
+This setup can be extended to posterior beliefs upon having observed $y$, however there are some intricacies, explained in the notes.
+
+\textbf{Claim 13.4} (connection to Fisher Info): Suppose the family of distributions $p_y(\cdot;x)$ is positive, thrice differentiable for each $y$ and satisfies the regularity conditions:
+\begin{align*}
+    E\left[\frac{\partial}{\partial x} \ln p_y(y;x)\right] = 0
+    \qquad
+    \left|
+    E\left[\frac{\partial^3}{\partial x^3} \ln p_y(y;x)\right]
+    \right| < \infty
+\end{align*}
+Then for all $x \in X$ we can write $D(p_y(;x)||p_y(;x+ \delta)) = \frac{\log(e)}{2} J_y(x)\delta^2 + O(\delta^2)$ as $\delta \rightarrow 0$
+
+
+\newpage
+\note{L14 - Information Geometry}
+We will develop a notion of geometry between probability distributions starting from the KL-divergence $D(p||q) = E_p[\frac{\log p(x)}{q(x)}]$ as a distance metric.
+
+For a finite alphabet $Y = \{1, \cdots, M\}$, we have $\sum p_y(i) = 1$, so each allotment of probability density (each possible distribution) is a point on the M-dimensional simplex.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item a distribution is on the boundary of the simplex if $q(y) = 0$ for some $y$
+    \item if $p,q$ are both on the interior of the simplex, $D(p||q) < \infty$ while if $q$ is on the boundary, then $D(p||q) = \infty$
+    \begin{itemize}[topsep=-1pt, itemsep=-1pt]
+        \item However if $p$ is on the boundary and $q$ is not, then $D(p||q) < \infty$ again.
+    \end{itemize}
+\end{itemize}
+
+\textbf{Def}: Given a nonconstant function $t(y) \rightarrow \mathbb{R}$, the set of distributions in $P$ with $E_p[t(y)] = \sum_y p(y) t(y) = c$ is known as a \textbf{linear family} with parameter $c$. 
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item This is a convex set
+\end{itemize}
+
+\textbf{Def 14.1} (I-projection): The information projection of $q$ onto a (nonempty + closed) set of distributions $P$ is $p^* = \argmin_p D(p||q)$
+
+\textbf{Thm 14.1} (Pythagoras' Theorem): Let $p^*$ be the I-projection of $q$ onto a (nonempty + closed + convex) set $P$. Then 
+\begin{equation*}
+    D(p||q) \geq D(p ||p^*) + D(p^* || q) \quad \forall p \in P
+\end{equation*}
+
+\textbf{Cor 14.1} (Pythagoras' Corollary): The I-projection $p^*$ of any $q$ not on the boundary of $P^Y$ onto a linear family $P$ cannot lie on a boundary component of $P^Y$ unless all of $P$ is confined to that particular boundary component
+
+\textbf{Def 14.2} (Linear Family): A set of $M$-dimensional distributions $P \subset P^Y$ is a \textbf{linear family} if for some $K < M$ there exists functions $\mathbf{t} = [t_1(\cdot), \cdots, t_K(\cdot)]^T$ and constants $\overline{\mathbf{t}} = [\overline{t}_1, \cdots, \overline{t}_K]$ such that $\mathbf{t}[p(1) \cdots p(M)]^T = \overline{\mathbf{t}}$.
+
+
+\textbf{Claim 14.1}: For every $p_1,p_2$ from a linear family $\mathcal{L} \subset P^y$, then for every $\lambda \in \R$ (including $\lambda > 1$) $\lambda p_1 + (1-\lambda) p_2 \in P^y$.
+
+\textbf{Cor 14.2} (Pythagorean Identity): For any $q$ in the simplex of $P^Y$ and some $\mathcal{L}$ defined over $Y$, the I-projection $p^*$ of $q$ onto $\mathcal{L}$ satisfies
+\begin{equation*}
+    D(p||q) = D(p||p^*) + D(p^* || q) \quad \forall p \in \mathcal{L}
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item This is stronger than Thm 14.1 - it gives us equality!
+\end{itemize}
+
+Define $\mathcal{L}_{\mathbf{t}}(p^*)$ to be the linear family with given $\mathbf{t}$ which contains $p^*$. What is the set of all distributions in the simplex whose I-projection onto $\mathcal{L}_{\mathbf{t}}(p^*)$ is $p^*$?
+
+\textbf{Thm 14.2}: $p^*$ is the I-projection of $q$ onto $\mathcal{L}_{\mathbf{t}}(p^*)$ iff $q$ is in the exponential family $\mathcal{E}_t(p^*) = \{q(y) = p^*(y) \exp{\mathbf{x}^T\mathbf{t}(y) - \alpha(\mathbf{x})}\ \forall y \in Y\}$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item We can use this to find the I-projection by finding the member satisfying $\mathbf{t}, \overline{\mathbf{t}}$ where $\alpha(x)$ is the log-partition function normalizing over $\sum_y p(y;x) = 1$
+\end{itemize}
+
+
+\newpage
+\note{L15 - Modeling as Inference}
+Usually we try to estimate a parameter $x$ of the distribution (estimation), but we can also try to model the distribution itself by finding a sufficient approximation $q(\cdot)$ (modeling)
+
+
+\textbf{Thm 15.1} Let $\{p_y(;,x)\}$ be a class of models, and let $q \in P^Y$ be an \textbf{admissible} distribution (does not depend on the parameter $x$). Then exist weights $w$ for a mixture model $q_w(\cdot) = \sum_x w(x) p_y(\cdot;x)$ such that
+\begin{equation*}
+    D(p_y(x)||q_w) \leq D(p_y(x)||q) \quad \forall x \in X
+\end{equation*}
+
+
+We use the minimax framework: $R^+ \triangleq \min_q \{ \max_x D(p_y(x) || q) \}$
+
+\textbf{Lemma 15.1}: For any $q \in P^Y$ we have $\max_x D(p_y(x)||q) = \max_w \sum_x w(x) D(p_y(x) ||q)$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item This can be used to rewrite  $R^+ = \min_q \{ \max_w \sum w(x) D(p_y(x) || q) \}$
+\end{itemize}
+
+
+\textbf{Thm 15.2} (Redundancy-Capacity Theorem): Optimizing $q$ and $w$ on both sides of the the minmax / maxmin are the same:
+\begin{equation*}
+    R^+ = \min_q \max_w \sum w(x) D(p_y(x) || q)
+    =
+    \max_w  \min_q \sum w(x) D(p_y(x) || q) 
+    = R^-
+\end{equation*}
+
+\separate
+If we visualize $R^-$ above from a Bayesian framework where $w(x)$ is a prior $p_x$, then through some simple algebra and tricks we can show:
+\begin{equation*}
+    R^- = \max_w \sum_x \sum_y w(x) p_y(y;x) \log \frac{p_y(y;x)}{q_w(y)}
+\end{equation*}
+which can eventually be rearranged to $\max I(x;y)$.
+
+\textbf{Def 15.1} Let $p_{y|x}$ be a model. The least informative prior $p_x^*$ for the model is given by $p_x^* = \argmax_{p_x} I(x;y)$
+
+\textbf{Def 15.2} The \textbf{model capacity} C of the model $p_{y|x}$ is the average cost reduction associated with the least informative prior: $C = \max_{p_x} I(x;y)$.
+
+We also have $0 \leq C \leq \log |X|$
+
+\textbf{Thm 15.3} (Equidistance property): The optimum mixture model $q^*$ with optimum weights $w^*$ is such that
+\begin{equation*}
+    D(p_y(x)||q^*) \leq C \quad \forall x \in X
+\end{equation*}
+with equality for all $x$ s.t. $w^*(x) > 0$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+This is a very neat property with a kind of complicated proof.
+\end{itemize}
+
+
+
+\newpage
+\note{L16 - Information Measures for Continuous Variables}
+We define \textbf{differential entropy}:
+\begin{equation*}
+    h(x) \triangleq 
+    - \int_{-\infty}^{\infty} p_x(x) \log p_x(x) \ dx
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+not invariant to coordinate transformations, unlike in the continuous case
+\end{itemize}
+We can also write
+\begin{align*}
+    h(x|y=y) 
+    &= 
+    - \int_{-\infty}^{\infty} p_{x|y}(x|y) \log p_{x|y}(x|y) \ dx \\
+    h(x|y)
+    &\triangleq
+    \int_{-\infty}^{\infty} p_y(y) h(x|y=y) \ dy
+\end{align*}
+
+Both differential mutual information and information divergence are coordinate-transformation invariant.
+
+\textbf{Differential mutual information} is similar to the discrete case: $I(x;y) = h(x) - h(x|y)$.
+
+Similarly, \textbf{information divergence} is $D(p||q) \triangleq \int_{-\infty}^{\infty} p(x) \log \frac{p(x)}{q(x)}\ dx$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item
+We can write $I(x;y) = D(p_{x,y} || p_xp_y) \geq 0$. Because of this we also know $h(x|y) \leq h(x)$ - conditioning can never increase differential entropy!.
+\end{itemize}
+
+\separate
+
+There was a very brief section on modeling with continuous alphabets. The mixture model is now $q_w(y) = \int_x w(x) p_y(y;x) \ dx$, and the model capacity is still $C = \max_{p_x} I(x;y)$
+
+There were also a bunch of results for differential/conditional differential entropy for Gaussian distributions. This was pretty long and straightforward, so just look at the notes if necessary.
+
+
+\newpage
+\note{L17 - Max Entropy Distributions}
+The least informative prior we previously discussed in L15 is optimal but challenging in practice, but we can get decent performance using a maximally-ignorant prior. Essentially given some linear constraints $E_p[t_k(y)] = \overline{t}_k$ for $K$ constraints we want to find the distribution with maximum entropy.
+
+In the finite alphabet case, we can find this by minimizing $D(p||U) = \log|Y| - H(p)$ where $U$ is the uniform distribution (and by construction the maximum entropy prior possible over finite alphabets).
+
+Note that $U = q(y) = e^{\beta(y)}$ where $\beta(y) = 0$. By the results of the previous section, we simply find the I-projection of $U$ onto the corresponding linear family:
+\begin{equation*}
+    p^*(y) = \exp{\sum_K x_i t_i(y) - \alpha(\mathbf{x})}
+\end{equation*}
+where $x_i$ are chosen to satisfy the constraints.
+
+\separate
+
+For infinite alphabets with both discrete and continuous distributions, the result is similar
+
+\textbf{Claim 17.1}: Among all distributiosn over $Y \subset \mathbb{R}$ in the linear family with finite differential entropy, the following distribution $p^*$, when it exists is the unique distribution having maximum differential entropy.
+\begin{equation*}
+    p^*(y) = \exp{\sum_K x_i t_i(y) - \alpha(\mathbf{x})}
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item This is the same form as before!
+    \item \textbf{Claim 17.2}: This result (and the form of $p^*$) is still applicable for discrete distributions over infinite alphabets.
+\end{itemize}
+
+We can essentially use this to show that the normal distribution is the maximum entropy distribution of given mean and variance!
+
+\newpage
+\note{L18 - Conjugate Priors}
+
+\textbf{Definition 18.1}: For observations of the form $\mathbf{y} = [y_1, \cdots, y_n]^T$ over $Y^n$ and $X$, then $p_{\mathbf{y}|x}$ is \textbf{conditionally i.i.d.} if for every $x \in X, \mathbf{y} \in Y^N$ we have:
+\begin{equation*}
+    p_{\mathbf{y}|x}(y_1,\cdots,y_n|x) = 
+    \prod_{n=1}^N p_{y|x}(y_n|x)
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item conditional i.i.d. models have permutation invariance, and their sufficient statistics are especially compact
+\end{itemize}
+
+\textbf{Definition 18.2}: A sequence $y_1,\cdots,y_n$ is exchangeable if for every permutation $n_1,\cdots,n_N$ and all $y_1,\cdots,y_n \in Y^N$ we have:
+\begin{equation*}
+    p_{y_1,\cdots,y_n}(y_1,\cdots,y_n) = p_{y_{n_1},\cdots, y_{n_N}}(y_1,\cdots,y_n)
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item \textbf{infinitely exchangeable}: exchangeable for every finite $N$.
+\end{itemize}
+
+\textbf{Theorem 18.1} (de Finetti): The sequence $y_1,y_2,\cdots$ is infinitely exchangeable iff for every $N$ there exists an alphabet $X$, distribution $p_x$, and model $p_{y_1,\cdots, y_N|x} = \prod p_{y|x}(y_i|x)$ such that:
+\begin{equation*}
+    p_{y_1,\cdots,y_N}(y_1,\cdots,y_N)
+    =
+    \int
+    p_{y_{n_1},\cdots, y_{n_N}}(y_1,\cdots,y_N|x)
+    p_x(x)
+    \ dx
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Think of every infinitely exchangeable sequence as a mixture of i.i.d. distributions
+\end{itemize}
+
+\separate
+
+We want to keep updating $p_{x|y}$ as we add in more data points $y_i$ to our sequence. Note that:
+\begin{equation*}
+    p_{x|\mathbf{y}}(\cdot | y)
+    = T_{\mathbf{y}}[p_x(\cdot)]
+    \triangleq
+    \frac{p_{x,y}(\cdot | \mathbf{y})}{p_{\mathbf{y}}(\mathbf{y})}
+    =
+    \frac{
+    p_{\mathbf{y}|x}(\mathbf{y}|\cdot) p_x(\cdot)
+    }{
+    \int
+    p_{\mathbf{y}|x}(\mathbf{y}|a) p_x(a)
+    \ da
+    }
+\end{equation*}
+so if we update $p_{x|y_1} \rightarrow p_{x|y_2,y_1}$
+\begin{align*}
+    p_{x|y_2,y_1} 
+    &= T_{y_2|y_1}[p_{x|y_1}] 
+    \triangleq
+    \frac{
+    p_{y_2|y_1,x} p_{x|y_1}(x|y_1)
+    }{
+    \int
+    p_{y_2|y_1,x}(y_2|y_1,a)
+    p_{x|y_1}(a|y_1) 
+    \ da
+    }
+\end{align*}
+
+We are interested in finding families of priors for which our updated belief after each successive observation $y_i$ is in the same family. We restrict our attention to the case of conditionally i.i.d. models: $p_{\mathbf{y|x}}(\mathbf{y}|x) = \prod p_{y|x}(y_i | x)$.
+
+\textbf{Def 18.3} A family $Q = \{q(\cdot;\mathbf{\theta}) : \mathbf{\theta}: \Theta \subset)\}$, where the mapping from $\Theta$ to $Q$ is continuous and continuously invertible, is a \textbf{conjugate prior family} for the conditional i.i.d. model if for every $y \in Y$ we have $p_{x|y}(\cdot | y) \in Q$ whenever $p_x(\cdot) \in Q$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item If $\mathbf{\theta}_0$ is the parameter specifying $p_x$, then $\mathbf{\theta}(y;\mathbf{\theta}_0)$ is the parameter for $p_{x|y}(\cdot | y)$
+\end{itemize}
+
+\textbf{Claim 18.1}: A collection $Q$ of the above form is a conjugate prior family iff $p_{x|y_1,\cdots, y_n}(\cdot | y_1, \cdots, y_n) \in Q$ whenever $p_x(\cdot) \in Q$ for every $N \geq 1$.
+
+\textbf{Def 18.4}: A conjugate prior family is \textbf{natural} if for every $y \in Y$ there exists a paramenter value $\mathbf{\theta}(y) \in \theta$ s.t. $q(\cdot; \mathbf{\theta}(y)) \propto p_{y|x}(y| \cdot)$ with a constant of proportionality that is typically a function of $y$.
+
+
+\textbf{Theorem 18.2}: For a conditional i.i.d. model such that $Y \subset \mathbb{R}$ is a region and $p_{y|x}$ is continuous, if a conjugate prior family exists, then for every $N \geq 1$ there exists a continuous function $t_N(\cdot, \dots, \cdot)$ with finite dimension which is a sufficient statistic for inferences about $x$.
+
+\separate
+
+In one of the optional sections, it is shown that conjugate priors only exist for $p_{y|x}$ which are from exponential families. In the last section, they show how to construct a conjugate prior family from a given exponential family, and essentially that all exponential families have a conjugate prior family.
+
+If $p_{y|x}(y|x) = \exp{\lambda(x)^T t(y) - \alpha(x) + \beta(y)}$, then the corresponding conjugate prior family is:
+\begin{equation*}
+    Q = \{ 
+    q(\cdot; \mathbf{t},N):
+    q(x; \mathbf{t},N)
+    =
+    \exp{[t^T \lambda(x) - N\alpha(x)] - \gamma(t,N)}
+    \}
+\end{equation*}
+where $\mathbf{t}$ is an updating function of the $t(y)$ we see, starting from our prior's value of $t_0$. The corresponding prior is $p_x(x) = q(x;t_0,N_0)$.
+
+Correspondingly, $Q$ is itself a canonical exponential family with natural statistic $[\lambda(x), - \alpha(x)]$ and parameter (known as $x$ in the definition earlier in the notes) $[\mathbf{t}, N]$
+
+\newpage
+
+\note{L19 - Information Geometry of MLE and EM}
+
+We begin by showing that maximum likelihood estimation is simply finding a parametrized distribution with minimum KL divergence to the ``empirical distribution".
+
+\textbf{Fact 19.1}: For any deterministic sequence $v = \{v_1, \cdots, v_n\}$ the empirical distribution is $\hat{p}(v;\mathbf{v}) = \frac{1}{N} \sum_N \mathbbm{1}_{v = v_n}$ and we can apply functions such as $\frac{1}{N} \sum_N f(v_n) = \sum_v f(v) \hat{p}(v;\mathbf{v})$.
+
+\textbf{Fact 19.2}: The ML estimate of $x$ over parameterized models $p_y(\cdot;x)$ is $\hat{x}_{ML}(\mathbf{y}) = \argmin_a D(\hat{p}_y(\cdot;y) || p_y(\cdot;a))$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item This is known as the \textbf{reverse I-projection}, or also the \textbf{M-projection}
+    \item The proof follows from $\Tilde{l}(x;y) = \sum_{b \in Y} \hat{p}_y(b;y) \log p_y(bx)$ 
+\end{itemize}
+\separate
+
+We can show similar results on the EM algorithm on i.i.d. observations. In EM we want to find:
+\begin{equation*}
+    U(x,x') 
+    = \sum_{\mathbf{z} \in Z^N} p_{\mathbf{z}|\mathbf{y}}(\mathbf{z}|\mathbf{y};x') 
+    \log p_{\mathbf{z}}(\mathbf{z};x)
+    =
+    \sum_n \sum_{c \in Z} p_{z|y}(c|y_n;x') \log p_z(c;x)
+\end{equation*}
+where we have used the independence of $p_{z|y}(z_i|y_i;x'), p_z(z_j;x)$ for $i \neq j$ to simplify terms.
+
+Now we construct a hypothetical empirical distribution for $p_z$ drawn from: $$\hat{P}^Z(\mathbf{y}) \triangleq \{\sum_{c \in \{g(c) = b\}} \hat{p}_z(c) = \hat{p}_y(b;\mathbf{y}) \ \forall b \in Y\}$$
+
+For $\hat{p}_z^* = \argmin_{\hat{p}_z \in \hat{P}^Z(\mathbf{y})} D(\hat{p}_z(\cdot) || p_z(\cdot;x))$ we have the following property:
+
+\textbf{Claim 19.1}: The empirical distribution $\hat{p}_z^*(\cdot;x)$ can be expressed as
+\begin{equation*}
+    \hat{p}_z^*(z;x)
+    = \frac{p_z(z;x) \hat{p}_y(g(z))}{p_y(g(z);x)}
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item This follows from a variant of the data processing inequality.
+    \item \textbf{Lemma 19.1} (DPI - Decision Form): Let $g: Z \rightarrow Y$ be an arbitrary mapping. Then for arbitrary $p_z,q_z$ and corresponding $p_y, q_y$ produced by $g$, we have $D(p_z || q_z) \geq D(p_y || q_y)$ with equality iff $\frac{p_z(z)}{q_z(z)} = \frac{p_y(g(z))}{q_y(g(z))}$ (presumably for every $z$). 
+\end{itemize}
+and by some algebra we can write:
+\begin{equation*}
+    \frac{1}{N}U(x,x') = - D(
+    \hat{p}_z^*(z;x')
+    ||
+    p_z(\cdot;x)
+    )
+    - H(\hat{p}_z^*(z;x'))
+\end{equation*}
+so $\argmax_x U(x,x') = \argmin_x D(\hat{p}_z^*(z;x') || p_z(\cdot;x))$
+
+So the EM algorithm is equivalent to first finding $\hat{p}_z^*(z;x^{(l-1)}) = \argmin_{\hat{p}_z \in \hat{P}^Z(\mathbf{y})} D(\hat{p}_z(\cdot) || p_z(\cdot;x))$ (the E-step), and then computing $\hat{x}^{l} = \argmin_x D(\hat{p}_z^*(z;x') || p_z(\cdot;x))$ (the M-step).
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Essentially computing a reverse I-projection followed by an I-projection.
+\end{itemize}
+
+
+\separate
+
+Lastly, they show that if we are computing the MLE over a linear family we must have that $\frac{1}{N} \sum_N t_k(y_i) = E_{p_y(\cdot| \hat{x}_{ML})}[t_k(y)]$ for each $y$.
+
+
+\newpage
+\note{L20 - Stochastic Approximation}
+Solving problems in high dimensional systems is pretty hard. Things like marginalizing out a variable $\sum_x p_{x,y}(x,y) = p_y(y)$ can be infeasible. In this lecture we develop sampling methods from complex distributions.
+
+\separate
+
+Consider the challenge of approximating sampling from an infeasible distribution $p$ using a simpler distribution $q$. In fact, we only need access to samples from $q$ and a non-normalized version $p_\circ(x)$ which satisfies $p(x) = \frac{p_\circ(x)}{Z_p}$ (where $Z_p = \sum_x p_\circ(x)$) for both $p,q$ for the following approaches. (In fact we don't even need the exact form of $q$, beyond samples from it).
+
+\textbf{Importance Sampling}: In order to estimate the mean of $p_x$ we can use the following:
+\begin{equation*}
+    \hat{\mu}_f(x)
+    =
+    \sum_{n=1}^N \frac{w(x_n)}{
+    \sum_{n'=1}^N w(x_{n'})
+    }
+    f(x_n)
+\end{equation*}
+where $w(x) = \frac{p_\circ(x)}{q_\circ(x)}$ is the \textbf{importance weights}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item The proof follows from $E_q[w(x)] = \frac{Z_p}{Z_q}$ and $E_q[w(x)f(x)] = \frac{Z_p}{Z_q}\mu_f$.
+    \item Qualitatively, we want our $q$ to be ``close" to $p$, so we don't have too few samples in high density parts of $p$.
+\end{itemize}
+
+\textbf{Rejection Sampling}: Suppose there is a constant $c$ such that $c q_\circ(x) > p_\circ(x)$ for all $x$. Then we can generate samples from $q$, and then generate $u \sim U([0, cq_\circ(x)])$ and discard if $u \leq p_\circ(x)$.
+
+\separate
+\textbf{Def 20.1} (FSHMC): A sequence of variables $x_i$ forms a \textbf{finite-state homogeneous Markov chain} if 1) $x$ is finite, 2)for every $n$ we have the Markov chain $x_1 \leftrightarrow \cdots \leftrightarrow x_n$, 3) $p_{x_{n+1}|x_n}$ does not depend on $n$.
+
+\textbf{Def 20.2}: A distribution $p_x$ is a \textbf{stationary distribution} of a FSHMC if $p_x(x) = \sum_{x'} w(x|x') p_x(x')$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item These are called the \textbf{global balance} equations
+\end{itemize}
+
+\textbf{Def 20.3}: A FSHMC is \textbf{fully communicating} if it is possible to go from any state to any other state (including itself) within some finite number of time steps.
+
+
+\textbf{Thm 20.1}: If a FSHMC is fully communicating it has a unique stationary distribution.
+
+\textbf{Def 20.4}: A fully communicating FSHMC is aperiodic if for some $x$ it can return to $x$ at any desired time after some $n_0$: $p_{x_n | x_1}(x|x) > 0$ for all $n > n_0$.
+
+\textbf{Thm 20.2}: If a fully communicating FSHMC with stationary distribution $p_x$ is aperiodic then for any $p_{x_1}$ we have $\lim_{n\rightarrow \infty} p_{x_n}(x) = p_x(x) \ \forall x \in X$.
+
+\textbf{Def 20.5}: A fully communicating FSHMC with distribution $p_x$ is reversible if when $p_{x_1} = p_x$ we have
+\begin{equation*}
+    p_{x_1,\cdots, x_n}(x_1, \cdots, x_n) = p_{x_1,\cdots, x_N}(x_n, \cdots, x_1)
+\end{equation*}
+
+
+\textbf{Prop 20.1}: A fully communicating FSHMC is reversible iff its stationary distribution satisfies:
+\begin{equation*}
+    p_x(x') w(x|x') = p_x(x) w(x'|x)
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item These are called the \textbf{detailed balance} equations
+\end{itemize}
+
+\separate
+
+Now we have the tools for MCMC approximations.
+
+From Thm 20.2, we know for a fully communicating aperiodic FSHMC with stationary distribution $p_x$ we have $\lim_{n\rightarrow \infty} D(p_x||p_{x_n}) = 0$.
+
+\textbf{Prop 20.2}: For a finite-state homogenous Markov chain $x_1 \leftrightarrow x_2 \cdots$ with stationary distribution $p_x \in P^X$, for any $p_{x_1} \in P^X$ we have
+\begin{equation*}
+    D(p_x || p_{x_{n+1}} \leq D(p_x || p_n)
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item This doesn't require the stationary distribution to be unique, or for $p_{x_n}$ to converge to one.
+\end{itemize}
+
+\textbf{Metropolis Hastings Algorithm}:
+We begin with unnormalized $p_\circ$ and transition model $v(\cdot|\cdot)$
+\begin{enumerate}[itemsep=-1pt, topsep=-1pt]
+    \item At time $n$ suppose we have $x_n = x$.
+    \item Generate $x'$ from $v(\cdot|x)$
+    \item Compute acceptance factor
+    \begin{equation*}
+        a(x \rightarrow x') \triangleq
+        \min \left\{
+        1,
+        \frac{p_\circ(x')v(x|x')}{p_\circ(x) v(x'|x)}
+        \right\}
+    \end{equation*}
+    \item Sample $u$ from bernoulli dist. with parameter $a(x \rightarrow x')$.
+    \item If $u = 1$, accept the transition to $x_{n+1} = x'$. Otherwise $x_{n+1} = x$. Then repeat.
+\end{enumerate}
+
+\textbf{Thm 20.3}: Given finite $X$ and our choice of $v(\cdot|\cdot)$ the sequence of samples generated by the MH algorithm corresponds to a sequence of variables that form a reversible Markov chain with transition distribution $w(x'|x) = v(x'|x) a(x \rightarrow x')$ for which the target $p$ is the stationary distribution
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item The proof simply shows that detailed balance is satisfied.
+\end{itemize}
+
+There are some requirements for the ``proposal distribution" $v(\cdot|\cdot)$:
+
+\textbf{Corr 20.1}: If the choice of $v(\cdot|\cdot)$ is such that the induced Markov chain $w(\cdot|\cdot)$ is fully communicating and aperiodic, then $x_n$ will have a distribution approaching the target $p$ as $n\rightarrow \infty$.
+
+\textbf{Corr 20.2}: If the chain with transition distribution $v(\cdot|\cdot)$ is fully communicating and $a(x \rightarrow x') > 0$ for all distinct pairs $x,x'$, the the induced MH chain is fully communicating.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Essentially, $v(x'|x) = 0$ iff $v(x|x') = 0$
+\end{itemize}
+
+\textbf{Corr 20.3}: If we have the conditions of Corr 20.2, and $a(x \rightarrow x') < 1$ for at least one distinct pair $x,x'$, then the induced MH chain is fully communicating and aperiodic.
+
+\newpage
+\note{L21 - Typical Sequences and Large Deviation}
+
+\textbf{Thm 21.1} (WLLN): Let $w_i$ be a set of i.i.d. random variables with mean $\mu$ and $E[|w_i|] < \infty$. Then for any $\epsilon > 0$:
+\begin{equation*}
+    \lim_{N \rightarrow \infty}
+    P \left( 
+    \left| 
+    \frac{1}{N}
+    \sum_N w_i - \mu
+    \right|
+    > \epsilon
+    \right)
+    = 0
+\end{equation*}
+
+Define the normalized log-likelihood: $L_p(y) = \frac{1}{N} \log p_y(y) = \frac{1}{N} \sum_N \log p(y_i)$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+From the WLLN we have $\lim_{N \rightarrow \infty} P(|L_p(y) + H(p)| > \epsilon) = 0$
+\end{itemize}
+
+\textbf{Def 21.1} (Typical Set): Let $y_i$ be a sequence of $N$ elements from $\mathcal{Y}$, with a small constant $\epsilon$. The sequence is called \textbf{$\epsilon$-typical} wrt $p$ if
+\begin{equation*}
+    |L_p(y) + H(p)| \leq \epsilon
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+$\mathcal{T}_\epsilon(p;N)$ is called the $\epsilon$-typical set wrt $p$.
+    \item 
+The probability that a generated sequence is in the typical set is approximately 1.
+    \item 
+Since $L_p(y) \approx -H(p)$, we have $p_y(y) \approx 2^{-NH(p)}$, and so $|\mathcal{T}_\epsilon(p;N)| \approx 2^{NH(p)}$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item Whenever $H(p) < \log M$, only a (vanishingly) exponentially small fraction of possible sequences actually occur.
+\end{itemize}
+\end{itemize}
+
+Define the \textbf{total probability of a set}(of sequences) $A$: $P\{A\} = \sum_{\mathbf{y} \in A} p^N(\mathbf{y})$
+
+\textbf{Thm 21.2} (Asymptotic Equipartition Property): Given $\mathcal{T}_\epsilon(p;N)$ with $\epsilon > 0$, we have
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+$\lim_{N \rightarrow \infty} P\{\mathcal{T}_\epsilon(p;N)\} = 1$
+    \item 
+$2^{-N(H(p) + \epsilon)} \leq p^N(y) \leq 2^{-N(H(p) - \epsilon)}$
+    \item 
+$(1- \epsilon)2^{N(H(p) - \epsilon)} \leq |\mathcal{T}_\epsilon(p;N)|
+\leq 2^{N(H(p) + \epsilon)}$
+\end{itemize}
+
+We can extend these results to continuous distributions, replacing cardinality with ``volume".
+
+\separate
+
+If we are generating data from $p$ and have some reference $q$, we can construct a new typical set definition.
+
+Using $L_{p|q}(y) = \frac{1}{N} \log \frac{p^N(y)}{q^N(y)} = \frac{1}{N} \sum_N \log \frac{p(y_i)}{q(y_i)}$ with WLLN we have: 
+$$\lim_{N \rightarrow \infty} P(|L_{p|q}(y) - D(p||q)| > \epsilon) = 0$$
+
+\textbf{Def 21.2} (Typical set, another): The sequence $y$ is called \textbf{divergence $\epsilon$-typical} wrt p relative to reference $q$ if:
+\begin{equation*}
+    |L_{p|q}(y) - D(p||q)| \leq \epsilon
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+The set of all such sequences of length $N$: $\mathcal{T}_\epsilon(p|q;N)$
+\end{itemize}
+The two variations of the typical set are not strictly equivalent, but sequences of samples from $p$ will fall in both sets with high probability. The sequences that are unique to one of the variations occur with negligible probability.
+
+We can compute the probability of sampling a sequence from $p$'s typical set using $q$:
+\begin{align*}
+    q^N(y) &\approx p^N(y) 2^{-ND(p||q)} \\
+    Q\{\mathcal{T}_\epsilon(p|q;N))\}
+    &\approx 2^{-ND(p||q)}
+\end{align*}
+The probability of sampling from $q$ and producing any sequence in the typical set of $p$ is exponentially small!
+
+\textbf{Thm 21.3}: Given, $p,q,N$, then:
+\begin{equation*}
+    (1 - \epsilon)2^{-N(D(p||q) + \epsilon)}
+    \leq
+    Q\{\mathcal{T}_\epsilon(p|q;N)\}
+    \leq
+    2^{-N(D(p||q) + \epsilon)}
+\end{equation*}
+
+\separate
+
+It is useful to characterize the ``large deviation probability": $P\left(\frac{1}{N} \sum_N t(y_i) \geq \gamma\right)$
+
+\textbf{Thm 21.4} (Cramer's): Given $y_i$ generated from $q$, and statistic $t: Y \rightarrow R$ with $\mu = E_q[t(y)] < \infty$. For any $\gamma > \mu$:
+\begin{equation*}
+    \lim_{n \rightarrow \infty}
+    -\frac{1}{N}
+    \log P\left( 
+    \frac{1}{N} \sum_N t(y_i) 
+    \geq \gamma
+    \right)
+    = E_C(\gamma)
+\end{equation*}
+where $E_C(\gamma)\triangleq D(p(\cdot;x) || q)$ is the \textbf{chernoff exponent} with $p(y;x) = q(y) e^{xt(y) - \alpha(x)}$ and $x>0$ satisfying $E_{p(\cdot;x)}[t(y)] = \gamma$.
+
+\newpage
+\note{L22 - Method of Types/Sanov's Thoerem}
+
+\textbf{Def 22.1}: The \textbf{type}, or empirical distribution, of a sequence $y$ is the probability distribution: $\hat{p}(b;y) = \frac{N_b(y)}{N}$ (where $N_b(y)$ is the count of $b$ in the sequence).
+
+\textbf{Def 22.2}: The \textbf{set of types} $P^Y_N$ is the set of all possible types for sequences of length $N$ generated from alphabet $Y$.
+
+\textbf{Def 22.3}: For some $p \in P^Y_N$, the \textbf{type class} of $p$ ($\mathcal{T}_N^Y(p)$) is the set of all sequences whose type is equal to $p$: $\mathcal{T}_N^Y(p) = \{y \: \ \hat{p}(\cdot;y) \cong p(\cdot)\}$
+
+\textbf{Identity 22.1}: For arbitrary $g(\cdot)$ we can write: $(\prod_N g(y_i))^{1/N} = \prod_M g(b)^{\hat{p}(b;y)}$
+
+We also define \textbf{exponential rate notation}: $f(N) \mathbf{\doteq} 2^{N \alpha}$ denotes $\lim_{N \rightarrow \infty} \frac{\log f(N)}{N} = \alpha$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Note the use of $\doteq$! This will be used frequently in the notes.
+    \item 
+This notation is a bit imprecise. Here are some cases:
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+$f(N) \doteq \infty \doteq 2^{N\infty}$ - grows superexponentially
+    \item 
+$f(N) \doteq 0 \doteq 2^{-N\infty}$ - decays superexponentially
+    \item 
+$f(N) \doteq 1 \doteq 2^{N \cdot 0}$ - grows or decays subexponentially. This could mean many things including convergence to a constant, or $N^2$ or $1/N$, but the approximation is very coarse for the range of possible cases and doesn't directly separate them.
+    \item given $f(N) \doteq 2^{N\alpha}, g(N) \doteq 2^{N\beta}$, addition and multiplication behave like $f(N) + g(N) \doteq 2^{N \max(\alpha, \beta)}$ and $f(N) \cdot g(N) \doteq 2^{N(\alpha + \beta)}$
+\end{itemize}
+\end{itemize}
+
+\separate
+
+\textbf{Lemma 22.1} For any finite alphabet $Y$, $|P_N^Y| \leq (N+1)^{|Y|}$ - the number of total types is polynomial in sequence length.
+
+\textbf{Lemma 22.2}: For a sequence $y$ and distribution $q$ we have:
+\begin{equation*}
+    q^N(y) = 2^{-N(D(\hat{p}(\cdot;y) || q) + H(\hat{p}(\cdot; y)))}
+\end{equation*}
+
+\textbf{Lemma 22.3}: $|\mathcal{T}_N^Y(p)| \approx 2^{NH(p)}$. Specifically:
+\begin{equation*}
+    cN^{-|Y|}2^{NH(p)} \leq |\mathcal{T}_N^Y(p)| \leq 2^{NH(p)}
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Every nondegenerate type class contains exponentially many sequences
+    \item The proof uses: 
+\textbf{Fact 22.1}: (coarse Stirling's) For $n \geq 1$: $e \left(\frac{n}{e}\right)^n \leq n! \leq n e \left(\frac{n}{e}\right)^n$
+\end{itemize}
+
+
+\textbf{Thm 22.1}: For $p,q \in P^Y$:
+\begin{equation*}
+    cN^{-|Y|}2^{-ND(p||q)} \leq Q\{ \mathcal{T}_N^Y(p) \}
+    \leq 2^{-ND(p||q)} 
+    \ \text{and} \
+    Q\{ \mathcal{T}_N^Y(p) \} \doteq 2^{-ND(p||q)} 
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+There is an exponentially small probability that a sequence obtained by sampling from $q$ will have a type $p \neq q$
+    \item 
+However, a sequence generated from $q$ will have a type other than $q$ with high probability, but it will be within $\epsilon$ of $q$ with high probability, and $q$ will be the most likely candidate.
+\end{itemize}
+
+\separate
+Given a set $\mathcal{S} \subset P^Y$ we can structure problems as computing the total probability over the set of sequences whose type matches $\mathcal{S}$: $\mathcal{R} = \{y \in Y^N : \hat{p}(\cdot; y) \in \mathcal{S} \cap P^Y_N\}$
+
+\textbf{Note}: We adopt the following abuse of notation: $Q\{\mathcal{S}\} \triangleq P_q(\hat{p}(\cdot; y) \in \mathcal{S}) = Q\{\mathcal{R}\}$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Note that $Q\{\mathcal{S}\} \triangleq P_q(\hat{p}(\cdot; y) \in \mathcal{S}) = Q\{\mathcal{S} \cap P_N^Y\}$!
+\end{itemize}
+
+\textbf{Thm 22.2} (Sanov's Theorem): for arbitrary $S \subset P^Y$ and $q \in P^Y$:
+\begin{equation*}
+    Q\{
+    S \cap P_N^Y
+    \}
+    \leq 
+    (N+1)^{|Y|}
+    2^{-ND(p_* || q)}
+    \ \text{and} \
+    Q\{
+    S \cap P_N^Y
+    \}\ 
+    \dot{\leq}\
+    2^{-ND(p_* || q)}
+\end{equation*}
+where $p_* = \argmin_{p \in \text{cl}(S)} D(p||q)$ is the I-projection of $q$ onto $\cl{S}$. 
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Moreover, if $\cl{S} = \cl{\text{int}(S)}$ then $ Q\{S \cap P_N^Y\} \approx (N+1)^{|Y|} 2^{-ND(p_* || q)}$
+    \item Note that $\cl{S}$ refers to the \textit{closure} of $S$ - all points in S, and its boundary. $\text{int}(S)$ refers to the interior of $S$ which disqualifies the theorem from having to process extremely weird sets which have random floating isolated points (since such points would not be in $\text{int}(S)$).
+    \item 
+The notes comment probability of any type $p$ generated under $q$ decays exponentially, but its maximized at the type closest to $q$ which dominates. These bounds feel pretty loose to me so the claim seems a bit strong but I guess I should mention it.
+\end{itemize}
+
+\separate
+
+We can use these developments to resolve the ``large deviations" scenario from the previous lecture: $\frac{1}{N} \sum_N t(y_i) \geq \gamma$.
+
+Define $\mathcal{R} = \{y; \hat{p}(\cdot;y) \in S \cap P_N^Y\}$ where $S = \{p: E_p[t(y)] \geq \gamma\}$. Then $S$ is a linear family within $P^Y$, and the I-projection of $q$ onto it lies along the one-parameter linear exponential family: $p_y(y;x) = q(y) e^{xt(y) - \alpha(x)}$.
+
+Using these shortcuts, we can handle special large deviation events, such as:
+\begin{equation*}
+    P\left(
+    \frac{1}{N} \sum_N y_i \geq \gamma_1 
+    \quad \text{and} \quad
+    \frac{1}{N} \sum_N s(y_i) \geq \gamma_2
+    \right)
+\end{equation*}
+which the scalar version of Cramer's Theorem cannot. But the vector version of Cramer's theorem can handle this, and has 2 advantages: (1) It is not limited to finite distributions, and specifically works on continuous distributions (2) it has better bounds on the large deviation probability because it doesn't depend on the cardinality $|Y|$ of the alphabet. 
+
+\separate
+
+\textbf{Thm 22.3} (Conditional Limit Theorem): Given i.i.d. $y$ generated from $q \in P^Y$, and nonempty closed and convex $S \subset P^Y$, then for any $\epsilon > 0$:
+\begin{equation*}
+    \lim_{N \rightarrow \infty} P(|\hat{p}(b;y) - p_*(b)| > \epsilon |
+    \hat{p}(\cdot; y) \in S
+    ) = 0
+\end{equation*}
+where $p_*$ is the I-projection from Sanov's theorem.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Essentially, given that the sequence lies in $S$, $\hat{p}(\cdot;y)$ converges in probability to $p_*(\cdot)$.
+    \item 
+The proof first shows that as $N \rightarrow \infty$, sequences corresponding to types $p$ near $p_*$ (according to KL) will occur with probability 1 when generated from $q$ (conditioning on the sequence begin in $\mathcal{S}$ to begin with). Then they bound $D(p||p_*) \leq \epsilon$, and use Pinsker's Inequality (below) to show convergence to $p_*$.
+\end{itemize}
+
+The proof of the above uses \textbf{Lemma 22.4} (Pinsker's Inequality): For any $q,p \in P^Y$ we have:
+\begin{equation*}
+    ||p - q||_1 \triangleq
+    \sum_{b \in Y}
+    |p(b) - q(b)|
+    \leq
+    \sqrt{2 \ln 2D(p||q)}
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Two distributions that are close in divergence are close in absolute difference as well!
+\end{itemize}
+
+\newpage
+\note{L23 - Asymptotics of Hypothesis Testing}
+
+We extend previous results for the log-likelihood ratio test is formulated as:
+\begin{equation*}
+    L'(y) =
+    \frac{1}{N} \log \frac{p_1^N(y)}{p_0^N(y)}
+    =
+    \frac{1}{N} \sum_N \log \frac{p_1(y_i)}{p_0(y_i)}
+    \LRT{\hat{H} = H_1}{\hat{H} = H_0} \gamma
+\end{equation*}
+while the corresponding LRT (i.e. Lec 2) would be:
+\begin{equation*}
+    L(y)
+    \triangleq
+    \frac{p_{y|H}(y|H_1)}{p_{y|H}(y|H_0)}
+    =
+    \frac{p_1^N(y)}{p_0^N(y)}
+    \LRT{\hat{H} = H_1}{\hat{H} = H_0} 2^{N\gamma}
+\end{equation*}
+
+We can define decision regions $\mathcal{R}_i = \{y \in Y^N : L'(y) (\geq/\leq) \gamma\}$ 
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+where we include the equality case in both regions for convenience. This is imprecise, but it doesn't make much difference since these events are very small.
+\end{itemize}
+we further define $S_0 = \{p \in P^Y: E_p[\log \frac{p_1(y)}{p_0(y)}] \leq \gamma\}$ (and $S_1$ resp.)
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+So $\mathcal{R}_i = \{y \in Y^N: \hat{p}(\cdot; y) \in S_i \cap P_N^Y\}$
+\end{itemize}
+We can write $E_{p_0}[\log \frac{p_1(y)}{p_0(y)}] = - D(p_0 || p_1), E_{p_1}[\log \frac{p_1(y)}{p_0(y)}] = D(p_1 || p_0)$. So for a ``logical" experiment, we would want $- D(p_0 || p_1) \leq \gamma \leq D(p_1 || p_0)$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+otherwise in expectation, data generated from $p_0$ would be classified as $H_1$ or vice versa, implying a very aggressive/passive detector respectively.
+\end{itemize}
+
+By Sanov's Theorem, the false-alarm and miss probabilities decay exponentially:
+\begin{equation*}
+    P_F = P_0\{R_1\} = 2^{-ND(p_0^* || p_0)}
+\end{equation*}
+where $p_0^*$ is the I-projection of $p_0$ onto $S_1$. Analogously $P_1 = 2^P{-ND(p_1^* || p_1)}$.
+
+The boundary between the distributions is the linear family:
+\begin{equation*}
+    \mathcal{L} =
+    \left\{
+    p \in P^Y :
+    E_p\left[\log \frac{p_1(y)}{p_0(y)}\right] = \gamma
+    \right\}
+\end{equation*}
+and the exponential family of weighted geometric means between $p_0, p_1$ is:
+\begin{equation*}
+    \mathcal{E}_{p_0, p_1}
+    =
+    \left\{
+    p \in P^Y
+    :
+    p(y;x) = \frac{p_0(y)^{1-x}p_1(y)^x}{Z(x)}
+    \right\}
+    =
+    \left \{
+    p \in P^Y :
+    \exp
+    \left\{
+    x \log \frac{p_1(y)}{p_0(y)}
+    - \alpha(x) + \log p_0(y)
+    \right\}
+    \right \}
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+This uses $p_0$ as its base distribution, and $t(y) = \log \frac{p_1(y)}{p_0(y)}$. So by thm 14.2 (orthogonal projection), $\mathcal{E}_{p_0,p_1}$ intersects the boundary $\mathcal{L}$ at $p_0^*$.
+    \item 
+$x$ varies from $0 \leq x \leq 1$ with $p_0(\cdot) = p(\cdot; 0), p_1(\cdot) = p(\cdot;1)$
+\end{itemize}
+
+If we reparametrize $\Tilde{x} = 1 - x$, we can write $\mathcal{E}_{p_1, p_0}$ using $t(y) = \log \frac{p_0(y)}{p_1(y)}$ and rewrite $\mathcal{L}$ to use this form. This allows us to show that $\mathcal{E}_{p_1,p_0}$ intersects $\mathcal{L}$ at $p_1^*$, which \textbf{implies} ${p_0^* = p_1^*}$!
+
+\separate
+
+Using results from L14, for exp. families of the form $\exp{x t(y) - \alpha(x) + \ln q(y)}$ we have $\frac{d}{dx} D(p(\cdot;x)||q) = x \var_{p(\cdot;x)}[t(y)]$, which applied to the above parametrization yields $D(p(\cdot;x)||p_0)$ is a monotonically increasing function of $x$. The alternate $\Tilde{x}$ parametrization suggests $D(p(\cdot;x)||p_1)$ is a monotonically increasing function of $\Tilde{x}$ (and thus monotonically decreasing in $x$).
+
+We can then show that $E_p[\log \frac{p_1(y)}{p_0(y)}] = D(p(\cdot;x)||p_0) - D(p(\cdot; x)||p_1)$ is a monotonically increasing function of $x$, and $p_* = p_0^* = p_1^*$ is the unique choice of $x$ satisfying $E_p[\log \frac{p_1(y)}{p_0(y)}] = \gamma$.
+
+\textbf{Key Equation}: $E_{p_*}[\log \frac{p_1(y)}{p_0(y)}] = D(p_*||p_0) - D(p_*||p_1) = \gamma$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+This corresponds to $P_F \approx 2^{-ND(p_*||p_0)}, P_M \approx 2^{-ND(p_*||p_1)}$
+    \item 
+We choose $x_*$ so that $D(p_*||p_0) - D(p_*||p_1) = \gamma$
+\end{itemize}
+
+\separate
+
+\textbf{Neyman-Pearson}: We constrain $P_F$ and minimize $P_M$ 
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Set $\gamma = D(p_0||p_1)$, which implies $p_* = p_0$\
+    \item 
+Corresponds to $P_M \doteq 2^{-ND(p_0||p_1)}$ and $P_F \doteq 1$. 
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Keep in mind exponential rate notation - this means $\lim \frac{\log P_F}{N} = 0$ so $P_F$ decays subexponentially (to a constant), while $P_M$ optimally decays with rate $D(p_0||p_1)$.
+\end{itemize}
+    \item 
+\textbf{Stein's Lemma}: when $P_F \leq \alpha$, the fastest rate of decay for $P_M$ is $ D(p_0||p_1)$.
+\end{itemize}
+
+\separate
+
+\textbf{Bayesian}: Given $C_{00} = C_{11} = 0$, the expected cost is:
+\begin{align*}
+    E[C]
+    &= C_{01}P_0P_F + C_{10}P_1P_M \\
+    &\doteq
+    C_{01}P-0 2^{-ND(p_* || p_0)}
+    +
+    C_{10}P_12^{-ND(p_*||p_1)} \\
+    &\doteq
+    2^{-N \min\{D(p_*||p_0), D(p_*||p_1)\}}
+\end{align*}
+Maximizing the rate of cost decay is equivalent to maximizing the minimum of $D(p_*||p_0), D(p_*||p_1)$. Obviously, we maximize this by setting $D(p_*||p_0) = D(p_*||p_1)$.
+
+This corresponds to $\gamma = 0$, and LRT threshold $2^{N\gamma} = 1$.
+
+The notes also define the \textbf{Chernoff information} $E_C$, which didn't seem relevant.
+
+They also commented that the expected cost decays exponentially with $E_C$, and any subexponential LRT threshold in general.
+
+
+\separate
+
+In the special case that both $p_0$/$p_1$ belong to the same set (either of) $\mathcal{S}_i$, we see one of $P_M/P_F$ decay to 0, while the other approaches 1 as $N \rightarrow \infty$
+
+
+\newpage
+\note{L24 - Convergence of Random Sequences}
+
+\textbf{Def 24.1} \textbf{(Almost-Sure)}: A sequence of random variables $z_i$ converges almost surely (or with probability 1) to a random variable $z$ if $P(\lim_{N \rightarrow \infty} z_N = z) = 1$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Notation: $z_N \xrightarrow{a.s.} z$
+\end{itemize}
+
+\textbf{Def 24.2} \textbf{(In Probability)}: A sequence of random variables $z_i$ converges in probability (or with ``high" probability) to a random variable $z$ if $\lim_{N \rightarrow \infty}P(|z_N - z| < \epsilon) = 1$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Notation: $z_N \xrightarrow{p} z$
+    \item 
+We can use this formulation to alternatively define almost sure convergence :
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+\textbf{Fact 24.1}: for a r.v. collection $z_i$ and $z$, we have $z_N \xrightarrow{a.s.} z$ iff for every $\epsilon > 0$, $\lim_{N \rightarrow \infty} P(|z_N - z| < \epsilon \text{ for all } N > N_0) = 1$
+
+Essentially, in almost sure convergence the probability that a sample path eventually gets to and remains within $\epsilon$ of $z$ approaches one. Meanwhile, converge in probability only suggests the probability that any individual sample in the sequence approaches one as $N \rightarrow \infty$.
+    \item 
+\textbf{Fact 24.2} For a r.v. collection $z_i$ and $z$ we have $z_N \xrightarrow{a.s.} z$ if for every $\epsilon > 0$ we have $\sum_{n = 1}^{\infty} P(|z_n - z| > \epsilon) < \infty$
+
+Essentially, the almost sure convergence is equivalent to convergence in probability decaying sufficiently fast.
+\end{itemize}
+\end{itemize}
+
+\textbf{Def 24.3} \textbf{(In Distribution)}: A sequence of random variables $z_i$ converges in distribution (or in ``law") to a random variable $z$ if CDF $\lim_{N \rightarrow \infty}P_{z_N}(z) = P_z(z)$ for all $z$ with continous $P_z(\cdot)$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Notation: $z_N \xrightarrow{d} z$
+    \item equivalently: $\lim_{n \rightarrow \infty} E[g(z_N)] = E[g(z)]$ for all bounded, continuous $g(\cdot)$.
+    \item 
+(stronger variant): \textbf{Def 24.4} (\textbf{In Divergence}): A sequence $z_i$ converges in divergence (or strongly in law) to r.v. $z$ if $\lim_{n \rightarrow \infty}D(p_{z_N}||p_z) = 0$
+\end{itemize}
+
+\textbf{Thm 24.1} (Continuous Mapping): If $z_i$ are defined over $R^k$ and $g:R^k \rightarrow R$ is continuous then for $x \in d,p,a.s.$ we have $z_N \xrightarrow{x} z$ implies $g(z_N) \xrightarrow{x} g(z)$.
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Generally, this holds whenever the set of points with $g(\cdot)$ is discontinuous has probability $0$ under $p_z$.
+\end{itemize}
+
+\textbf{Thm 24.2} (Slutsky's): If $x_N \xrightarrow{d} x$ and $y_N \xrightarrow{d} c$ where $c$ is a finite constant, then:
+\begin{equation*}
+    x_N + y_N \xrightarrow{d} x + c \text{ and } x_Ny_N \xrightarrow{d} cx
+\end{equation*}
+and if $z_N$ is any sequence with $x_N = z_N y_N$ and $c \neq 0$, then $z_N \xrightarrow{d} x/c$.
+
+\textbf{Thm 24.3} (SLLN): The exact same conditions and result as the WLLN (Thm 21.1), but with almost sure convergence (instead of in probability)!
+
+
+For analyzing estimators, we want a more general version of the SLLN. We can use the following variant, created by Wald:
+
+\textbf{Thm 24.4} (Uniform LLN): For i.i.d. $w_1, \cdots, w_N \in W$, and compact parameter set $\Theta$, and $g(w;\theta)$ which is continuous in $\theta$ for each $w$ and which has some $g_+(w) > 0$ with $E[g_+(w)] < \infty$ and $|g(w;\theta)| \leq g_+(w)$ for all $w, \theta$, then:
+\begin{equation*}
+    \max_\theta 
+    \left| 
+    \frac{1}{N}
+    \sum_N g(w_i;\theta) - \mu(\theta)
+    \right|
+    \xrightarrow{a.s.} 0 \text{ as } N \rightarrow \infty
+\end{equation*}
+where $\mu(\theta) = E[g(w;\theta)]$ - the sample average almost surely converges uniformly to its mean.
+
+
+\textbf{Thm 24.5} (CLT): Let $w_i$ be a set of i.i.d. r.v.s with mean $\mu$ and variance $\sigma^2 < \infty$. Then:
+\begin{equation*}
+    \sqrt{N}
+    \left(
+    \frac{1}{N}
+    \sum_N w_i - \mu
+    \right)
+    \xrightarrow{d} N(0, \sigma^2) \text{ as } N \rightarrow \infty
+\end{equation*}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+A theorem from Polya tells us if $z_N \xrightarrow{d} z$ and CDF $P_z(\cdot)$ is continuous, then the convergence is uniform ($\lim \max_z |P_{z_N}(z) - P_z(z)| = 0$), so the convergence in the CLT is uniform.
+    \item 
+We even have a $1 / \sqrt{N}$ bound on the convergence thanks to Berry-Essen theorem apparently.
+\end{itemize}
+
+
+The following stronger variant also exists, although I don't exactly understand it.
+\textbf{Thm 24.6} (SCLT): Let $w_i$ be a set of i.i.d. r.v.s with mean $\mu$ and variance $\sigma^2 < \infty$. Then:
+\begin{equation*}
+    e_N \triangleq 
+    \sqrt{N}
+    \left(
+    \frac{1}{N}
+    \sum_N w_i - \mu
+    \right)
+    \xrightarrow{D} N(0, \sigma^2) \text{ as } N \rightarrow \infty
+\end{equation*}
+iff $D(p_{e_N}||N(0,\sigma^2)) < \infty$ for some $N$.
+
+
+
+\newpage
+
+\note{L25 - Asymptotics of Parameter Estimation}
+
+We begin with \textbf{nonrandom} parameter estimation 
+
+\textbf{Def 25.1}: A parameter $x$ is \textbf{identifiable} if $x' \in X$ satisfies $D(p_y(\cdot;x)||p_y(\cdot;x')) = 0$ only when $x' = x$.
+
+\textbf{Def 25.2}: A sequence $\hat{x}_N(y^N)$ of estimates is \textbf{weakly consistent} if $\hat{x}_N(y^N)) \xrightarrow{p} x$ as $N \rightarrow \infty$
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+Strong consistency is the same, but with almost sure convergence
+\end{itemize}
+
+\textbf{Def 25.3} A sequence of estimates  is \textbf{asymptotically normal} if $\sqrt{N} (\hat{x}_N - x) \xrightarrow{d} N(0, \frac{1}{\sigma^2(x)})$ for some $\sigma^2(x) > 0$
+
+\textbf{Def 25.4}: A sequence of estimates is \textbf{asymptotically efficient} if it is asymptotically normal as in 25.3 with $\sigma^2(x) = J_y(x)$, the fisher information of $p_y(y;x)$.
+
+We also define empirical divergence: $\hat{D}_y^N(a) \triangleq \frac{1}{N} \sum_N \log \frac{p_y(y_n;x)}{p_y(y_n;a)}$
+
+\separate
+
+For finite $X$ alphabets, we have the following result using WLLN:
+
+\textbf{Thm 25.1}: For $p_y(\cdot;\cdot)$ with $|Y| < \infty$ and $|X| < \infty$, and $y_i$ generated i.i.d. according to some identifiable $p_y(\cdot;x)$ with $p_y(y;a) > 0$ for all $y,a$, the MLE $\hat{x}_N(y^N)$ is weakly consistent.
+
+We can also extend to continuous $X$: $p_y(y;a) = \exp{at(y) - \alpha(a) + \beta(y)}$, for which we derived properties of the ML estimate in L19. Here we show the resulting estimate is strongly consistent and asymptotically efficient.
+
+\textbf{Thm 25.2}: For an exponential family as above and $y_i$ generated according to some representative identifiable $p_y(\cdot;x)$ with $\ddot{\alpha}(x) = J_y(x) > 0$, the ML estimate $\hat{x}_N(y^N)$ is strongly consistent.
+
+\textbf{Thm 25.3}: For an exponential family as above and $y_i$ generated according to some representative identifiable $p_y(\cdot;x)$ with $\alpha(x) = J_y(x) > 0$, the ML estimate is asymptotically efficient.
+
+\todo{I skipped some examples which are probably helpful to read}
+
+\separate
+
+We can also prove some results when the parametrization for $p_y$ is of the wrong form.
+
+\textbf{Thm 25.6}: For $P$ with finite $|Y|,|X|$ and samples $y_i$ from $q_y \notin P$ with $q_y(y), p_y(y;x) > 0$ for all $y,x$ and with unique $x_* = \argmin_x D(q_y || p_{y|x}(\cdot|x))$, then $\hat{x}_N(y_i) \xrightarrow{p} x_*$.
+
+\separate
+We then evaluate \textbf{bayesian} parameter estimation.
+
+Generally we want to be able to integrate $p_{x|y^N}(x|y^N) = \int p_x(a) p_{y^N|x}(y^N | a)\ da$. We can approximate this with Laplace's Method
+
+
+\textbf{Laplace's Method}: We approximate integrals of the form $\int_a^b e^{Ng(z)} \ dz$ where $g$ is smooth and $N$ is large using a taylor series for $g(z)$ about $\argmax_{z \in [a,b]} g(z)$.
+
+\textbf{Thm 25.7} (Laplace's method): for twice-differentiable $g:[a,b] \rightarrow R$ with unique maximum $z_* \in (a,b)$ s.t. $\ddot{g}(z_*) < 0$ we have:
+\begin{equation*}
+    \frac{
+    \int_a^b e^{Ng(z)}\ dz
+    }{
+    e^{Ng(z_*)} 
+    \sqrt{\frac{2\pi}{|N\ddot{g}(z_*)|}}
+    }
+    \rightarrow 1
+    \text{ as } N \rightarrow \infty
+\end{equation*}
+
+The notes then specialize this to show that when $X$ is continuous, under some suitable conditions the posterior tends towards a gaussian centered at $\hat{x}_{N, MLE}(y)$ $p_{x|y^N} \approx N(\hat{x}_N(y^N), \frac{1}{NJ_y(x})$
+
+They also prove a result when $p_{y|x}$ is from an exponential family:
+
+\textbf{Thm 25.8}: With $p_{y|x}$ from an exponentntial family and $y_i$ generated i.i.d according to $p_{y|x}$ where $x$ is generated from some prior distribution $p_x$ and all $x$ are identifiable and $\ddot{\alpha}(x) = J_y(x) > 0$. Then:
+\begin{equation*}
+    \ln
+    \frac{p_{\Tilde{x}|y}(\Tilde{a}|y^N)}{
+    p_{\Tilde{x}|y}(\Tilde{0}|y^N)
+    }
+    \xrightarrow{a.s.}
+    \frac{1}{2}J_y(x)\Tilde{a}^2
+    \text{ as }
+    N \rightarrow \infty, \ \Tilde{a} \in R
+\end{equation*}
+where $\Tilde{x} \triangleq \sqrt{N}(x - \hat{x}_N(y^N))$
+
+\end{document}
+
+
+\begin{comment}
+
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item 
+\end{itemize}
+
+
+\begin{enumerate}[label=\textbf{(\alph*)}, topsep=0pt]
+    \item Hello
+\end{enumerate}
+
+\begin{itemize}[topsep=0pt]
+    \item Hi
+\end{itemize}
+
+\begin{center}
+   \includegraphics[width=0.6\textwidth]{L15-1.png} 
+\end{center}
+\end{comment} 
