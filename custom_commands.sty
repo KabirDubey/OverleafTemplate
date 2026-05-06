@@ -1,0 +1,144 @@
+\ProvidesPackage{mathhw}
+
+\usepackage{amsmath}
+
+\newcommand{\paren}[1]{
+\left( #1 \right)
+}
+
+
+
+
+% \newcommand{\rv}[1]{
+% \mathrm{#1}
+% }
+
+% for boldface of math commands, we use bm
+\usepackage{bm} % in your preamble
+
+\newcommand{\detv}[1]{#1}
+\newcommand{\rv}[1]{\mathsf{#1}}
+\newcommand{\detvec}[1]{\mathbf{#1}}        % Bold serif
+\newcommand{\rvec}[1]{\bm{\mathsf{#1}}}     % Bold sans-serif
+
+\begin{comment}
+437 Notation: 
+
+$\mathbf{x}$ : bold serif (deterministic vector)
+$\bm{\mathsf{x}}$: bold san serif (random vector)
+$\mathrm{x}$: serif ( not used?)
+$\mathsf{x}$: sans serif (random variable)
+$x$: normal (deterministic value)
+\end{comment}
+
+
+
+
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\expect}[1]{
+\mathbb{E}\left[ #1 \right]
+}
+\newcommand{\expectsubscript}[2]{
+\mathbb{E}_{#1} \left[ #2\right]
+}
+% \newcommand{\norm}[1]{\left \lvert #1 \right \rvert}
+
+
+\newcommand{\Ebrackets}[1]{%
+\mathbb{E} \left[ #1 \right]%
+}
+
+
+%shorthand for partial derivatives
+\newcommand{\p}{
+    \partial
+}
+%shorthand for a full partial
+\newcommand{\pf}[2]{
+    \frac{\p #1}{\p #2}
+}
+
+\newcommand{\der}{
+    \frac{d}{dx}
+}
+
+%ceiling function
+\newcommand{\ceil}[1]{
+    \lceil #1 \rceil
+}
+
+
+
+\newcommand{\blue}[1]{
+    \textit{\textcolor{BlueViolet}{#1}}
+}
+
+
+\newcommand{\by}[2]{
+    #1 \times #2
+}
+\renewcommand\emph{\blue}
+
+\newcommand{\highlight}[1]{
+    \colorbox{BurntOrange}{#1}
+}
+
+\newcommand{\boxheader}[1]{
+    \begin{center}
+        \textbf{#1}
+    \end{center}
+}
+
+
+\DeclareMathOperator*{\argmax}{argmax}
+\DeclareMathOperator*{\argmin}{argmin}
+
+
+%====== Added Commands=======================
+
+\newcommand{\bb}[1]{\mathbb{#1}}
+\newcommand{\HH}{\mathcal{H}}
+\newcommand{\hh}{\mathcal{h}}
+\newcommand{\statP}{\mathbb{P}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\MP}{\mathcal{P}}
+\newcommand{\PR}{\mathcal{P}(\R)}
+\newcommand{\PC}{\mathcal{P}(\C)}
+\newcommand{\PoF}{\mathcal{P}(\F)}
+\newcommand{\nullset}[1]{\text{null } #1}
+\newcommand{\range}[1]{\text{range } #1}
+\newcommand{\img}[1]{\text{im } #1}
+%\newcommand{\rank}[1]{\text{rank } #1} %obsolete with physics package
+\newcommand{\vspan}[1]{\text{span } #1}
+\newcommand{\ndiv}{\hspace{-4pt}\not|\hspace{2pt}}
+\newcommand{\LV}{\mathcal{L}(V)}
+\newcommand{\TC}{T_{\C}}
+\newcommand{\VC}{V_{\C}}
+\newcommand{\LVC}{\mathcal{L}(V_{\C})}
+\newcommand{\ol}[1]{\overline{#1}}
+\newcommand{\sign}[1]{\text{sign}(#1)}
+\renewcommand{\Tr}{\text{tr}}
+
+\newcommand{\pVar}[1]{\text{Var}\left(#1\right)}
+% \newcommand{\Var}{\text{Var}}
+\newcommand{\Var}[1]{\text{Var}\left( #1 \right)}
+\newcommand{\Cov}[2]{\text{Cov}\left(#1,#2\right)}
+\newcommand{\bias}{\text{bias}}
+\newcommand{\I}{\mathcal{I}}
+
+\newcommand{\dx}{\ dx}
+
+
+\newcommand{\mbf}[1]{\mathbf{#1}}
+
+\newcommand{\myvec}[2]{
+    \begin{bmatrix}
+        #1 \\
+        #2
+    \end{bmatrix}
+}
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\renewcommand{\ip}[2]{\langle #1, #2 \rangle} %physics package uses this
+%============================================

@@ -1,0 +1,612 @@
+%Usage guide: https://docs.google.com/document/d/1oDJKcFVK_yXD3Do6vfyTFKJuDwdwN4g6XFTM5QASadA/edit?usp=sharing
+
+\documentclass[12pt]{article} % If you want 12 pt font instead of the standard 10 pt
+%\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[shortlabels]{enumitem}
+\usepackage[margin=1 in]{geometry}
+
+\pagenumbering{arabic}
+
+
+\usepackage{mathhw}
+\usepackage{custom_commands}
+
+\usepackage{cancel}
+\usepackage{soul}
+
+\begin{document}
+\begin{center}
+    \textbf{Linear Algebra}\\
+\end{center}
+\note{Miscellaneous}
+\begin{itemize}[topsep=-3pt, itemsep = -1pt]
+    \item $\cos{\theta} = \frac{a \cdot b}{||a|| \ ||b||}$ and $\sin{\theta} = \frac{||a \times b||}{||a|| \ ||b||}$
+    \item NOTE: $||v|| = \sqrt{v^Tv}$. Don't forget the square root!
+    \item The inverse of a matrix is unique.
+\end{itemize}
+
+\note{Kinds of Matrices}
+\begin{itemize}[topsep=-3pt, itemsep=-1pt]
+    \item \textbf{Symmetric Matrix}: $A^T = A$
+    \begin{itemize}[topsep = -1pt]
+        \item $A^TA$ and $AA^T$ are symmetric and PSD. It follows that $A^TA + nI$ is PSD and invertible.
+    \end{itemize}
+    \item \textbf{Orthogonal Matrix}: $Q^T = Q^{-1}$. The columns of $Q$ are orthonormal vectors.
+    \begin{itemize}[topsep = -1pt]
+        \item $||Qx|| = ||x||$ - multiplication doesn't change magnitudes or dot products!  
+        \item Because $I = Q^TQ = QQ^TQQ^T = QQ^T$, implying the rows are \underline{also orthonormal}!
+    \end{itemize}
+    \item Observation: Let $A$ be a data matrix with each column matrix representing data from some observation. Then $A^TA$ is a correlation matrix.
+    \item \textbf{Covariance Matrix}: Any symmetric and PSD matrix. You can generate the corresponding \href{https://stats.stackexchange.com/a/221238}{random vector}.
+\end{itemize}
+
+\note{GS 2.6 LU Decompostion}
+Gauss Jordan Elimination turns a matrix $A$ into a upper triangular matrix $U$, and the translations needed to accomplish this can makeup a lower triangular matrix $L$, which ultimately leads to the $A = LU$ decomposition. 
+
+Dividing out the diagonal values to turn them into 1s can be done with a diagonal matrix $D$ for the LDU decomposition
+
+
+\note{GS 2.7 Subspaces}
+The rank of a $m \times n$ matrix is the rank/dimension of the column space (and of the row space since they are equal) of the matrix.
+
+Also the nullspace of matrix $A$ is x s.t. $Ax = 0$ and the left nullspace is $x^TA = A^Tx = 0$
+\begin{center}
+   \includegraphics[width=0.5\textwidth]{LA1.png} 
+\end{center}
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item The rowspace and nullspace are orthogonal complements ($\text{span}(A^T),N(A)$)
+    \item So are the column space and the nullspace of the transpose ($\text{span}(A),N(A^T)$)
+\end{itemize}
+
+
+
+\newpage
+
+\note{GS 4.2 Projection}
+Projecting a vector $b$ onto the line through vector $a$ is easy. Call the projection $p = \Tilde{x}a$, then the component $b - p = b - \Tilde{x}a$ is perpendicular to $a$, so we have
+\begin{equation*}
+    a \cdot (b- \Tilde{x}a) = 0 \qquad \Tilde{x} = \frac{a\cdot b}{a \cdot a} = 
+    \frac{a^Tb}{a^Ta} \qquad p = a\Tilde{x} = \frac{aa^T}{a^Ta} b = \frac{aa^T}{||a||^2}b
+\end{equation*}
+
+\separate
+
+Projection of $b$ onto the subspace spanned by the basis of column vectors $a_1,\cdots,a_n$ (which we condense to matrix $A$) is equivalent to finding a linear combination of the basis vectors with coefficients $\Tilde{x}$ as $A\Tilde{x}$. 
+
+Then $b - A \Tilde{x}$ is perpendicular to all the $a_i$, and so is in the left nullspace of $A$.
+\begin{equation*}
+    A^T(b-A\Tilde{x}) = 0 \quad \mathhl{\Tilde{x} = (A^TA)^{-1}A^Tb}
+\end{equation*}
+Since we ultimately want the projection of $b$ onto $A$, we need $p = A\Tilde{x} = A(A^TA)^{-1}A^Tb$.
+
+
+Lastly, $A^TA$ is invertible iff $A$ has linearly independent columns (pg. 212), which is proved by showing they have equivalent nullspaces. For example, if  $(A^TA)x = 0$, we can write $x^TA^TAx = (Ax)^T(Ax) = ||Ax|| = 0$
+
+
+
+\note{GS 4.3 Least Squares Regression}
+Suppose we have a matrix $Ax = b$ with no solution. This can happen because there are too many equations in the original system - i.e. too many rows. 
+
+Luckily we know that $A^TA$ is invertible iff $A$ has linearly independent columns from 4.2. Alternatively, we can also just show they have the same \href{https://math.stackexchange.com/questions/349738/prove-operatornamerankata-operatornameranka-for-any-a-in-m-m-times-n}{rank}, and so if $A$ is invertible, so is $A^TA$. 
+
+So we can multiply both sides by $A^T$: $\mathhl{A^TAx = A^Tb}$. This ends up producing the solution which minimizes the error $e = b - Ax$!
+
+Suppose we are trying to fit data points $(X,Y)$. Then this becomes $X \beta = Y$, and we augment the $X$ coordinates with a column of 1s to leave room for a $y$-intercept:
+\begin{equation*}
+    X = 
+    \begin{bmatrix}
+    1 & x_1 \\
+    \vdots & \vdots \\
+    1 & x_m
+    \end{bmatrix}
+    \quad
+    Y = 
+    \begin{bmatrix}
+    y_1 \\
+    \vdots \\
+    y_m
+    \end{bmatrix}
+    \quad
+    X^TX =
+    \begin{bmatrix}
+    m & \sum x_i \\
+    \sum x_i & \sum x_i^2
+    \end{bmatrix}
+    \quad 
+    X^TY =
+    \begin{bmatrix}
+    \sum y_i \\
+    \sum x_i y_i
+    \end{bmatrix}
+\end{equation*}
+
+Differentiating $||Ax-b||$ (or equivalently $||X\beta - Y||$) with respect to each component of the $n$ rows of the columns of $A$ produces $n$ equations (from the original $m \times n$ matrix) that we want to minimize (set equal to 0). These end up being equivalent to $A^TAx = A^Tb$! (6.036 notes ch7.2).
+
+This is all ok when $A^TA$ is invertible (when it has linearly independent columns). When this isn't the case we have ambiguity in our solution. We'll resolve this later with the pseudoinverse (7.4).
+
+Alternatively, we can add in ridge regularization which yields invertible $A^TA + n\lambda I$ (6.036 notes).
+
+
+\newpage
+
+\note{GS 4.4 QR Decomposition and Orthonormal Bases}
+Recall \textbf{Orthogonal Matrix}: $Q^T = Q^{-1}$. The columns of $Q$ are orthonormal vectors.
+
+Permutation, Rotation, Reflection matrices are all orthonormal but whatever.
+
+Projection with an orthonormal basis is easy: $p = Q\Tilde{x} = QQ^Tb$. The projection matrix simplifies down to $QQ^T$.
+
+The Gram-Schmidt Process is the obvious method for orthogonalizing a set of vectors $A,B,C,\cdots$:
+\begin{align*}
+    q_1 &= \frac{A}{||A||} \qquad  A = a\\
+    q_2 &= \frac{B}{||B||} \qquad  B = b - (q_1 \cdot b) q_1 = b - \frac{A^Tb}{A^TA}A \\
+    q_3 &= \frac{C}{||C||} \qquad  C = c - (q_1 \cdot c) q_1 - (q_2 \cdot c) q_2
+\end{align*}
+
+We can apply this orthogonalization to the columns of matrix to obtain the QR decomposition
+\begin{align*}
+    A &= QR \\
+    \begin{bmatrix}
+    & & \\
+    a & b & c \\
+    & & \\
+    \end{bmatrix}
+    &=
+    \begin{bmatrix}
+    & & \\
+    q_1 & q_2 & q_3 \\
+    & & \\
+    \end{bmatrix}
+    \begin{bmatrix}
+    q_1^Ta & q_1^Tb & q_1^Tc \\
+    0 & q_2^Tb & q_2^Tc \\
+    0 & 0 & q_3^Tc
+    \end{bmatrix}
+\end{align*}
+Note that $v(q_i^Tv)$ is equal to the component of $v$ in the direction of $q_i$. Multiplying this through column by column of $R$ reproduces the columns of $A$.
+
+Notably $R$ is upper triangular. We can simplify $A^TA \rightarrow R^T R$, making the LSE for $A\Tilde{x} = b$ into $R\Tilde{x} = Q^Tb$. This is then solvable very quickly with back substitution because of the upper triangular nature of $R$. 
+
+The runtime of Gram-Schmidt is \href{https://stackoverflow.com/questions/27986225/computational-complexity-of-gram-schmidt-orthogonalization-algorithm}{$O(mn^2)$} for an $m \times n$ matrix. The textbook has pseudo-code on pg. 240 detailing the operations of QR decomposition naively (in truth there's more advanced teechniques used to speed up the computation).
+
+\newpage
+\note{GS 5.1 Properties of Determinants}
+\begin{itemize}[topsep=-1pt, itemsep=-1pt]
+    \item When $A$ is singular (non-invertible), $\det(A) = 0$.    
+    \item $\det$ is the product of the pivots (when eliminated to upper triangular etc.)
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+            \item When upper/lower triangular, just multiply the diagonal entries
+    \end{itemize}
+    \item $\det(AB) = \det(A)\det(B)$ (so inverse has $1/\det(A)$ and $\det(A^T) = \det(A)$
+    \item Useful facts
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+            \item Exchanging rows reverses signs. It follows that (having two equal rows/columns, $\det = 0$) and (subtracting a multiple of one row from another doesn't change $\det(A)$).
+            \item If two rows are equal, then $\det = 0$
+    \end{itemize}    
+    \item The determinant is a linear function on each row (multiply a row by a constant and the determinant is multiplied by that constant, create a new matrix that has another row added to the $i$th row and it's the same as summing the determinants of two matrices with each given row in the $i$th position)
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+            \item Multiplying a row by a constant $k$ multiplies $\det$ by $k$
+            \item Multiply a matrix by a constant $k$ multiplies $\det$ by $k^n$
+            \item Adding a multiple of one row ($i$) to another row ($j$) doesn't change $\det$
+            \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+                \item Create a new matrix with a copy of row $i$ in the $j$th row
+                \item Because there are two identical rows, this has $\det = 0$
+                \item Multiply the $j$th row of the new matrix by a constant factor if you desire
+                \item Add the two matrices, adding the two determinants
+            \end{itemize}
+            \item Thus to compute determinant we can row reduce
+    \end{itemize}
+\end{itemize}
+
+
+\note{Basis and Invertibility Facts}
+For $n \times n$ matrix $A$:
+\begin{itemize}[topsep=-1pt, itemsep =-1pt]
+    \item If a matrix is square with linearly independent columns $\rightarrow$ invertible
+    \item Using the complex space we are guaranteed $n$ eigenvalues, but not $n$ L.I. eigenvectors
+    
+\end{itemize}
+
+
+Miscellaneous
+\begin{itemize}[topsep=-1pt, itemsep =-1pt]
+    \item Trace is cyclic (verify by bashing):
+    \begin{equation*}
+        \Tr(AB) = \Tr(BA)
+    \end{equation*}
+    \item The inverse of a symmetric matrix, if it exists, is symmetric as well (\href{https://math.stackexchange.com/questions/340233/transpose-of-inverse-vs-inverse-of-transpose}{ref} and \href{https://math.stackexchange.com/questions/325082/is-the-inverse-of-a-symmetric-matrix-also-symmetric}{ref}) \\
+    
+\end{itemize}
+
+\newpage
+
+\note{GS 6.1 Introduction to Eigenvalues}
+Eigenvectors are $x$ s.t. $Ax = \lambda x$ for some scalar $x$, and $\lambda$ is the corresponding eigenvalue.
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item $A^n = \lambda^nx$ and $A^{-1}x = \lambda^{-1}x$
+    \item Can rearrange and solve $(A-\lambda I)x = 0$
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item $A-\lambda I$ is singular and has no inverse (so its determinant is 0).
+    \item Equivalent to finding $\lambda$ such that $\det(A-\lambda I) = 0$.
+        \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+            \item $\det(A-\lambda I)$ is the \textbf{Characteristic Polynomial}
+            \item $\det(A-\lambda I) = (z-\lambda_1)^{d_1}\cdots (z-\lambda_m)^{d_m}$, where $d_i$ is the algebraic multiplicity.
+            \item Eigenvalues/the roots can be complex!
+        \end{itemize}
+    \item Then use elimination or other tools to solve $(A-\lambda I)x = 0$
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+            \item The rows of $A-\lambda I$ might have some nice pattern (in $2\times2$ they're [possibly] multiples of each other with the multiplicative factor being the $i$th coefficient of the corresponding eigenvector)
+    \end{itemize}
+    \end{itemize}
+
+\end{itemize}
+Symmetric matrices have \href{https://math.stackexchange.com/questions/82467/eigenvectors-of-real-symmetric-matrices-are-orthogonal}{orthogonal eigenvectors}. Allegedly this is explained more later.
+
+Because Singular matrices have nonempty nullspaces, $0$ is an eigenvalue with the nullspace as its corresponding eigenvectors.
+
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item The \textbf{product} of the eigenvalues with multiplicity (i.e. $\lambda_1^{d_1}\cdots\lambda_m^{d_m}$) equals the determinant of the matrix
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+            \item Simlpy set $\lambda = 0$ in the expansion of $\det(A-\lambda I)$
+    \end{itemize}
+    \item The \textbf{sum} of the eigenvalues with multiplicity (i.e. $d_1\lambda_1 + \cdots d_m\lambda_m$) equals the sum of the $n$ diagonal entries (called the \textbf{trace})
+\end{itemize}
+
+\note{(some of) 6.4 - Complex Eigenvalues}
+For the product of two complex numbers $c_1 c_2$ we have $\overline{c_1 c_2 } = \overline{c_1} \cdot \overline{c_2}$, and the same relation holds for the product of matrices. Therefore for real matrix $A$, $\overline{Ax} = A \overline{x}$ (because $\overline{A} = A$).
+
+Also, we define the norm of a complex vector as $||c_1|| = c_1 \cdot \overline{c_1}$. 
+
+For a matrix with real entries
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item if $\lambda$ is a complex eigenvalue with eigenvector $v$ \\
+    then $\overline{\lambda}$ is \href{https://textbooks.math.gatech.edu/ila/complex-eigenvalues.html}{also} an eigenvalue with eigenvector $\overline{v}$
+\end{itemize}
+We can simply conjugate both sides of $Ax = \lambda x$:
+\begin{equation*}
+    Ax = \lambda x \qquad A \overline{x} = \overline{\lambda} \overline{x}
+\end{equation*}
+
+
+
+
+Also, the eigenvalues of a real symmetric matrix are \href{https://math.stackexchange.com/questions/354115/prove-that-the-eigenvalues-of-a-real-symmetric-matrix-are-real}{real} (and we can create a full orthogonal eigenbasis - see Spectral Thm 6.4). To show this, convert $Sx = \lambda x$ and $S\overline{x} = \lambda \overline{x}$ into 
+\begin{equation*}
+    \overline{x}^TSx = \overline{x}^T \lambda x = \overline{x}^T \overline{\lambda}x
+    \qquad
+    \overline{x}^Tx \geq 0
+\end{equation*}
+
+
+
+\newpage
+\note{GS 6.2 - Diagonalization}
+
+If we have $n$ distinct (linearly independent) eigenvectors for matrix $A$, we can apply a change of basis to create a diagonalized form:
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item Using eigenvectors $x_1,\cdots,x_n$ and corresponding eigenvalues $\lambda_1,\cdots,\lambda_n$
+    \item Make change of basis matrix $X = \begin{bmatrix}
+    X_1,\cdots,X_n
+    \end{bmatrix}$ using column vectors $x_i$ (converts from eigenvector basis back to the standard basis). $X^{-1}$ intuitively does the reverse.
+    \item Make diagonal matrix $\Lambda = \begin{bmatrix}
+    \lambda_1 &&\\
+    & \ddots & \\
+    &&\lambda_n
+    \end{bmatrix}$
+    and we have $A = X \Lambda X^{-1}$
+\end{itemize}
+We can use this to compute powers of a matrix very easily since $\Lambda$ is diagonal:
+\begin{equation*}
+    A^k = X\Lambda \cancel{X^{-1}X} \cdots \cancel{X^{-1}X}\Lambda X^{-1}   = X\Lambda^kX^{-1} = X
+    \begin{bmatrix}
+    \lambda_1^k &&\\
+    & \ddots & \\
+    &&\lambda_n^k
+    \end{bmatrix}
+    X^{-1}
+\end{equation*}
+We can use this technique to compute $A^k$ where $k$ can be as big as we want, for example $\infty$ when we try to find the stationary state of a markov chain.
+
+We can also generalize this to compute $A^ku$ for some $u$ which we can break down with an eigenbasis:
+\begin{align*}
+    A^ku 
+    &= A^k(c_1x_1 + \cdots c_nx_n) \\
+    &= c_1A^kx_1 + \cdots + c_n A^k x_n \\
+    &= c_1 \lambda_1^k x_1 + \cdots + c_n \lambda_n^k x_n
+\end{align*}
+
+\vspace{-1em}
+\separate
+
+Matrix invertibility and diagonalizability aren't the same. If any eigenvalue is 0, then the nullspace is nonempty and the matrix is not invertible. But a matrix can still be diagonalizable with an eigenvalue of 0.
+
+\textbf{Note:} Eigenvectors corresponding to different eigenvalues are linearly independent (pg. 306)
+
+We define \textbf{similar} matrices as those sharing a central matrix $C$ in a more general change of basis $BCB^{-1}$
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item These matrices all share the same eigenvalues - those of $C$ (pg. 308)
+    \item Comes from generalizing the family of matrices sharing $\Lambda$ in their diagonalization with different eigenvector matrices $X$.
+\end{itemize}
+\vspace{0.4em}
+\separate
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item \textbf{Algebraic Multiplicity}: The power of $\lambda_i$ in $\det(A-\lambda I)$
+    \item \textbf{Geometric Multiplicity}: The dimension of the eigenspace for $\lambda_i$
+\end{itemize}
+
+\newpage
+
+\note{GS 6.4 - Symmetric Matrices}
+Symmetric matrices have two critical properties:
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item They have only real eigenvalues (if the matrix is real)
+    \item The total eigenvector multiplicity is $n$.
+    \item The $n$ eigenvectors can be chosen to be orthonormal.
+\end{itemize}
+\textbf{Spectral Theorem}: Every symmetric matrix has factorization $S = Q \Lambda Q^T$ with real eigenvalues $\Lambda$ and orthonormal eigenbasis $Q$.
+
+\textbf{Note:} Eigenvectors of a real symmetric matrix with different $\lambda$ are perpendicular (pg. 340)
+
+The pivots and eigenvalues of \textbf{symmetric} matrices have the same signs
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item The number of positive eigenvalues equals the number of positive pivots etc.
+    \item Also true for 0 eigenvalues since 0 pivots correspond to nullspace!
+\end{itemize}
+
+\textbf{Note:} We are always guaranteed a full basis of eigenvectors, even if there are repeat eigenvalues (pg. 343). There are a few ways to prove this, including using Schur's Theorem.
+
+
+\separate
+For non-symmetric matrices, $\lambda$ may be complex. In this case, complex eigenvalues come in conjugate pairs (and so do their corresponding eigenvectors)
+
+
+\note{GS 6.5 - Positive Definite Matrices}
+ 
+Matrices with only positive eigenvalues are \mathhl{\textbf{positive definite}}. \\
+Matrices with all eigenvalues $\geq 0$ are \mathhl{\textbf{positive semi-definite}}.
+
+We can quickly check for this property by row reducing and checking that the pivots are positive (the signs of the pivots are the same as the signs of the eigenvalues)
+
+Intuition for this definition comes the energy definition:
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item $Sx = \lambda x$ implies $x^TSx = \lambda x^Tx = \lambda ||x||^2$
+    \item So when all $\lambda \geq 0$, we have that $v^TSv \geq 0$ for all $v$
+\end{itemize}
+
+\textbf{Note:} If $S$ and $T$ are symmetric positive definite, so is $S+T$. (pg. 352)
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item just expand $v^T(S+T)v$ to see that both components are always positive
+    \item similarly $A^TA$ and $AA^T$ are always PSD (try $v^TA^TAv = ||Av|| \geq 0$)
+\end{itemize}
+
+Ultimately symmetric matrices with any of the following properties have them all:
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item All $n$ pivots positive
+    \item All $n$ upper left determinants positive
+    \item All $n$ eigenvalues of $S$ positive (positive definite)
+    \item $x^TSx > 0$ for all $x \neq 0$
+    \item $S = A^TA$ for a matrix $A$ with independent columns (just like in 4.3! $A$ can be rectangular.)
+\end{itemize}
+
+A useful property of PSD matrices is that the overall determinant is positive (which follows from the above regardless)
+
+One important application of PSD is in minimization of a function - the first derivative must be 0, and the Hessian (second derivative matrix must be positive definite).
+
+
+\newpage
+\note{GS 7.1 SVD Intro for Matrix Compression}
+Given vectors $u$ ($m \times 1$) and $v$ ($n \times 1$), then we can generate a rank 1 matrix with $uv^T$ ($m\times n$).
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item This allows you to compress $mn$ values down into $m+n$ values!
+\end{itemize}
+We can choose these vectors with more nuance and scaling terms to reconstruct a higher rank matrix: $A = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T$.
+
+We can choose $\mathhl{v_i}$ as the eigenvectors of $A^TA$ and $\mathhl{u_i}$ as the eigenvectors of $AA^T$. Both of these matrices are symmetric.
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item $A^TA$ matrices are PSD! Observe $xA^TAx = ||Ax|| \geq 0$. So all eigenvalues are $\geq 0$.
+\end{itemize}
+We can specifically choose $u_i$ such that $Av_i = \sigma_i u_i$, for the given eigenvalue $\lambda_i = \sigma^2_i$.
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item By this setup, $u_i$ is a \href{https://gregorygundersen.com/blog/2018/12/20/svd-proof/#4-textbfu_i-is-a-unit-eigenvector-of-aatop}{unit}(see 4.) vector with many eigenvalues
+    \item Using $A^TAv_i = \lambda_i v_i$, we can show $Av_i$ is an eigenvector of $AA^T$ with eigenvalue $\lambda_i$.
+\end{itemize}
+Ultimately we can write this out as the \textbf{Singular Value Decomposition}:
+\begin{equation*}
+    A = U \Sigma V^T
+\end{equation*}
+where $U$ and $V$ are orthogonal matrices of eigenvectors of $AA^T$ and $A^TA$ as described above. The eigenvalues in $\Sigma$ are sorted in decreasing order down the diagonal. So the first few columns of $U,V$ end up being the most important components of $A$.
+
+\note{GS 7.2 Bases and Matrices in SVD}
+We can use the following basis vectors:
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item $u_1,\cdots,u_r$ is the eigenbasis of $AA^T$, $u_{r+1},\cdots, u_m$ is the basis of the left nullspace $N(A^T)$
+    \item $v_1,\cdots, v_r$ is the eigenbasis of $A^TA$ and $v_{r+1},\cdots, v_n$ is the basis of the nullspace $N(A)$
+    \item The matrices \href{https://math.stackexchange.com/questions/1087064/non-zero-eigenvalues-of-aat-and-ata}{share} the same nonzero eigenvalues!
+    \item We construct $u$ from $v$ via $Av_i = \sigma_i u_i$ (proof linked above).
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+        \item We can expand this to $AV = \Sigma U$, which rearranges to the SVD.
+    \end{itemize}
+\end{itemize}
+
+We generalize the aforementioned decomposition: $A = \sigma_1 u_1 v_1^T + \cdots + \sigma_n u_n v_n^T$
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item This corresponds to the ``full" svd which has many zero entries.
+    \item Removing the zero'd $\sigma_n$ terms, we get a new $\Sigma$ which is just $r \times r$, instead of $m \times n$
+\end{itemize}
+
+A \bluehl{complete and very helpful derivation} with many details can be accessed \href{https://gregorygundersen.com/blog/2018/12/20/svd-proof/#4-textbfu_i-is-a-unit-eigenvector-of-aatop}{here}!
+
+The singular value decomposition is equivalent to just diagonalizing the matrix if it's PSD (and by definition symmetric). However the singular values are always positive and real, which may not be the case for the diagonalization.
+
+
+\textbf{Eckart-Young Theorem}:
+The approximation $A' = \sum_{i=1}^k \sigma_i u_i v_i^T$ is the rank $k$ approximation matrix that minimizes the matrix Frobenius norm (sum of squared entries) $||A - A'||_F$
+
+
+
+\newpage
+
+\note{GS 7.3 PCA by the SVD}
+The way we typically organize matrices when talking about PCA is a little different - each subject gets a row of its measurements. This is like how we organize data in Linear Regression. Strang's description of PCA is a bit sparse so these notes also contain bits of \href{https://www.youtube.com/watch?v=fkf4IBRSeEc&list=PLMrJAkhIeNNRpsRhXTMt8uJdIGz9-X_1-&index=23}{this video}.
+
+\begin{enumerate}[itemsep = -1pt,topsep=0pt]
+    \item
+Suppose we have a $n \times 15$ matrix of experimental observations $\mathbb{X}$ (i.e. we have 15 measurements for each of the $n$ items).
+
+    \item
+Define the mean row $\Tilde{x} = \frac{1}{n} \sum x_i$, and balance each column by subtracting the mean row:
+\begin{equation*}
+    B = \mathbb{X} - \Tilde{\mathbb{X}}
+    =
+    \begin{bmatrix}
+    - & x_1 & - \\
+    & \vdots & \\
+    - & x_n & -
+    \end{bmatrix}
+    -
+    \begin{bmatrix}
+    - & \Tilde{x} & - \\
+    & \vdots & \\
+    - & \Tilde{x} & -
+    \end{bmatrix}
+\end{equation*}
+
+    \item
+Then $C = B^TB$ is a $15 \times 15$ symmetric matrix 
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+        \item Dividing by $n-1$ we get the covariance matrix $E[(M_i - E[M_i])(M_j - E[M_j])]$
+    \end{itemize}
+    
+    \item 
+    Diagonalizing gives $CV = V\Lambda$ where $V$ is the orthogonal matrix of eigenvectors.
+    
+    \item The principal components $T$ are then $T = BV$
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+        \item These principal components span the column space of $B$
+        \item The $i$th principal component has contribution $\frac{\lambda_i}{\sum \lambda_i} = \frac{\sigma_i^2}{\sum \sigma_i^2}$
+        \item Alternatively, let $B = U \Sigma V^T$, then $T = BV = U \Sigma$
+    \end{itemize}
+\end{enumerate}
+It can be hard to parse this all. Essentially 
+\begin{enumerate}[itemsep = -1pt,topsep=-1pt]
+    \item
+    We find the eigenvectors $V$ of the $(15 \times 15)$ covariance matrix $C = B^TB$. 
+    \item 
+    These become the principal directions $v_i$ of the PCA - $v_i$ accounts for variance $\lambda_i = \sigma_i^2$.
+    \begin{itemize}[topsep=-1pt,itemsep=-1pt]
+        \item These are sometimes called ``loadings" or ``principal directions", Strang calls these directions the \bluehl{principal components} and calls it a day.
+        \item On their own, these tell us the axes which we should use to visualize our data, but we haven't actually changed to the new basis yet.
+    \end{itemize}
+    
+    \item We then project each row $x_i$ of $B$ onto $v_j$ to change the basis from the standard $m$-d basis into the eigenvector basis
+    \begin{itemize}[topsep=-3pt,itemsep=-1pt]
+        \item We use $P_{v_j}(x_i) = v_j \left( \frac{v_j^Tx_i}{||v||^2}\right) = v_j (v_j^T x_i)$
+        \item This boils down to $T = BV$ on the macro scale (see below). These are what other sources (stupidly) refer to as the \bluehl{``principal components"} (confusing + misleading)
+    
+    \begin{equation*}
+        T = BV = 
+        \underbrace{
+        \begin{bmatrix}
+        - & x_1 & - \\
+        & \vdots & \\
+        - & x_n & -
+        \end{bmatrix}}
+        _{n \times m}
+        \underbrace{
+        \begin{bmatrix}
+        | & & | \\
+        v_1 & \cdots & v_n \\
+        | & & |
+        \end{bmatrix}}
+        _{m \times m}
+    \end{equation*}
+    \item In some \href{https://stackoverflow.com/questions/51040075/why-sklearn-pca-needs-more-samples-than-new-featuresn-components}{implementations} $V$ is $m \times \min(m,n)$ since if $n < m$ the $m-n$ extra eigenvalues are 0 so the corresponding eigenvectors are useless anyways.
+    \end{itemize}
+    \item Our data is now reparametrized according to the orthonormal principal directions basis!
+\end{enumerate}
+
+\newpage
+\note{GS 7.4 Geometry of the SVD and Pseudoinverses}
+We define the \emph{norm} of a matrix $A$ as its largest growth rate. This equals largest singular value $\sigma_1$:
+\begin{equation*}
+    ||A|| = \max_{x \neq 0} \frac{||Ax||}{||x||} = \sigma_1
+\end{equation*}
+Visualizing a matrix using the SVD (rotate, stretch, rotate) helps justify this. Or $Av_1 = \sigma_1 u_1$.
+
+It follows that $||A + B|| \leq ||A|| + ||B||$ and $||AB|| \leq ||A|| \cdot ||B||$
+
+\separate
+
+This section also introduces the \emph{Polar Decomposition} $A = QS$ with orthogonal $Q$ and PSD $S$.
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item when $A$ is invertible, $S$ is directly positive definite.
+\end{itemize}
+Essentially we separate a matrix into its rotate ($Q$) and stretch ($S$) components (like $e^{i\theta} \cdot r$):
+\begin{equation*}
+    A = U \Sigma V^T = (UV^T)(V\Sigma V^T) = (Q)(S)
+\end{equation*}
+This leads to the useless fact: $Q = UV^T$ is the closest orthogonal matrix to $A$ (Frobenius norm)
+
+\separate
+Lastly, we have the glorious pseudoinverse (wooooo): $A^\dagger$
+
+Consider first a (tall skinny) $n \times m$ matrix with rank $m$ (linearly independent columns).
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item $A^TA$ ($m\times m$) is invertible, so we can use the left inverse $(A^TA)^{-1}A^T$
+\end{itemize}
+Alternatively for a (short fat) $n\times m$ matrix with rank $n$ (linearly independent rows)
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item $AA^T$ ($n\times n$) is invertible, so we can use the right inverse $A^T(AA^T)^{-1}$
+\end{itemize}
+
+We can use the SVD to generalize this to $r(A) < m,n$. Define $A^\dagger$
+\begin{equation*}
+    A^\dagger = V \Sigma^\dagger U^T = V 
+    \begin{bmatrix}
+    \sigma_1^{-1} & & \\
+    & \ddots & \sigma_r^{-1} \\
+    \cdots & 0 & \cdots
+    \end{bmatrix}
+    U^T
+\end{equation*}
+Then we can somewhat invert $A$:
+\begin{equation*}
+    A^{\dagger}A = V \Sigma^\dagger U^T U \Sigma V^T = V \Sigma^\dagger \Sigma V^T = V
+    \begin{bmatrix}
+    \textbf{I} & 0 \\
+    0 & \textbf{0}
+    \end{bmatrix}
+    V^T
+\end{equation*}
+Note that the zero'ed columns of the pseudo-identity ($\Sigma^\dagger \Sigma$) correspond to eigenvectors with eigenvalues 0 (and are in the nullspace). So applying the pseudoinverse will drop all components that would be in the nullspace of $A^T$ (and thus the orthogonal complement of its image), and invert the components that are in the image of $A$. 
+
+For example, suppose we are solving $Ax = b$ with $b = Ay + z$ where $z \in N(A^T) = \text{Im}(A)^\perp$, then we would solve $A^\dagger A x = A^\dagger b$ and obtain $A^\dagger b = y$ as our approximation of $x$.
+
+Because the pseudoinverse returns the components of $b$ that are in the image of input $A$ (and discards perpendicular components), it ends up solving the OLS \href{https://www.youtube.com/watch?v=PjeOmOz9jSY}{regression} problem.
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item If we have infinite solutions (underdetermined) returns the $x$ with minimum $||x||_F$ norm
+    \item If we have no solution (overdetermined) returns the $x$ with the minimum LSE $||Ax - b||_F$
+\end{itemize}
+
+
+\end{document}
+
+
+\begin{comment}
+\begin{enumerate}[label=\textbf{(\alph*)}, topsep=0pt]
+    \item Hello
+\end{enumerate}
+
+\begin{itemize}[topsep=-1pt,itemsep=-1pt]
+    \item Hi
+\end{itemize}
+
+\begin{center}
+   \includegraphics[width=0.6\textwidth]{L15-1.png} 
+\end{center}
+\end{comment} 
