@@ -1,0 +1,11 @@
+
+$pdf_mode = 5;          # XeLaTeX -> PDF
+$out_dir = 'build';
+$aux_dir = 'build';
+
+$bibtex_use = 2;        # Run bibtex/biber as needed
+
+$xelatex = 'xelatex %O -interaction=nonstopmode -file-line-error -synctex=1 %S';
+
+# search for local style files in .sty directory
+$ENV{'TEXINPUTS'} = './sty//:' . ($ENV{'TEXINPUTS'} // '');
