@@ -1,0 +1,80 @@
+% Modified by Kabir D. from a template from Anugrah C. 
+
+\documentclass[12pt]{article} % If you want 12 pt font instead of the standard 10 pt
+%\documentclass{article}
+
+% if using XeLatex:
+% fontspec defaults to Latin Modern on XeLaTeX, so loading it alone gives us LM.
+\usepackage{fontspec}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{mathtools}
+
+\usepackage[shortlabels]{enumitem}
+\usepackage[margin=1 in]{geometry}
+
+\pagenumbering{arabic}
+\usepackage{cancel}
+\usepackage{soul}
+
+% hyperref must load before cleveref (loaded by sty/quickmaths)
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks=true,
+    citecolor=red,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=cyan
+}
+
+% local style files (resolved via TEXINPUTS in latexmkrc)
+\usepackage{customs}
+\usepackage{quickmaths}
+
+% biber 
+\usepackage[
+    backend=biber,
+    style=alphabetic,
+    sorting=nyt
+]{biblatex}
+\addbibresource{references.bib}
+
+
+\begin{document}
+\begin{center}
+    {\textbf{Test title}\\}
+\end{center}
+\note{Miscellaneous}
+\begin{itemize}[topsep=-3pt, itemsep = -1pt]
+    \item $\cos{\theta} = \frac{a \cdot b}{\norm{a}\,\norm{b}}$
+\end{itemize}
+
+
+\separate
+
+
+\note{Physics-substitute notation demo}
+\begin{itemize}[topsep=-3pt, itemsep=-1pt]
+    \item Paired delimiters: $\abs{x}$, $\norm{v}$, $\parens{a+b}$, $\bracks{i,j}$, $\braces{x : x > 0}$.
+    \item Auto-sized variants: $\Norm{\dfrac{a}{b}}$, $\Abs{\dfrac{p}{q}}$, $\Par{\dfrac{1}{1+x}}$.
+    \item Inner product: $\inprod{u}{v}$ and inline $\inprods{u}{v}$.
+    \item Sets and constants: $\R, \C, \N, \Z$, $\eps$, identity $\id$.
+    \item Operators: $\Tr(\rho^2) \le 1$, $\rank(\ma) = n$, $\diagop(\lambda_1,\ldots,\lambda_n)$, $\poly(n)$, $\Span\{v_1, v_2\}$.
+    \item Dirac notation (fixed): $\ket{\psi}$, $\bra{\phi}$, $\braket{\phi}{\psi}$, $\ketbra{\psi}{\phi}$, $\mel{\phi}{\mh}{\psi}$.
+    \item Dirac notation (auto-sized): $\Ket{\tfrac{1}{\sqrt{2}}(0 + 1)}$, $\Braket{\phi}{\psi}$, $\Mel{\phi}{\mh}{\psi}$.
+    \item Matrix shorthand: $\ma, \mb, \mh, \mu = \mmu \ket{\psi}$, projector $\mproj$, oracle $\oracle$, algorithm $\alg$.
+\end{itemize}
+
+
+\separate
+
+
+\input{sections/related.tex}
+
+\printbibliography
+
+
+\end{document}
+
+
