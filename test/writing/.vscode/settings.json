@@ -23,5 +23,8 @@
 
   "texlab.latexFormatter": "latexindent",
   "texlab.bibtexFormatter": "latexindent",
-  "texlab.experimental.followPackageLinks": true
+  "texlab.experimental.followPackageLinks": true,
+
+  # automatic git commit 
+  "gitdoc.enabled": true
 }
